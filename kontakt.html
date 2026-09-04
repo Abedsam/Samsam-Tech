@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kontakt — Samsam-Tech</title>
+<meta name="description" content="Kontaktieren Sie Samsam-Tech — wir melden uns innerhalb von 48 Stunden mit einem individuell zugeschnittenen Angebot.">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+
+<!-- ===================== HEADER ===================== -->
+<header class="site-header" id="site-header">
+  <div class="container">
+    <a href="index.html" class="brand">
+      <svg class="mark" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <circle cx="17" cy="17" r="16.5" stroke="url(#brandRing)" />
+        <path d="M22 12.5c0-1.8-1.9-3-5-3-3.4 0-5 1.4-5 3.2 0 1.9 1.8 2.5 4.6 2.9 3.4.5 5.9 1.1 5.9 3.6 0 2-2 3.5-5.5 3.5-3.3 0-5.4-1.2-5.7-3.3" stroke="#EDFFFE" stroke-width="1.6" stroke-linecap="round"/>
+        <defs>
+          <linearGradient id="brandRing" x1="0" y1="0" x2="34" y2="34" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#00827C"/>
+            <stop offset="1" stop-color="#FDE9FF"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      Samsam-Tech
+    </a>
+
+    <nav class="nav-links" aria-label="Hauptnavigation">
+      <a href="index.html">Home</a>
+      <a href="dienstleistungen.html">Dienstleistungen</a>
+      <a href="projekte.html">Projekte</a>
+      <a href="ueber-uns.html">Über uns</a>
+      <a href="kontakt.html" class="active">Kontakt</a>
+      <a href="impressum.html">Impressum</a>
+    </nav>
+
+    <div class="header-actions">
+      <a href="kontakt.html" class="btn btn-primary">Jetzt anfragen</a>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Menü öffnen" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 6h18M3 12h18M3 18h18" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<nav class="mobile-nav" id="mobile-nav" aria-label="Mobile Navigation">
+  <a href="index.html">Home</a>
+  <a href="dienstleistungen.html">Dienstleistungen</a>
+  <a href="projekte.html">Projekte</a>
+  <a href="ueber-uns.html">Über uns</a>
+  <a href="kontakt.html">Kontakt</a>
+  <a href="impressum.html">Impressum</a>
+</nav>
+
+<main>
+
+  <!-- ===================== PAGE HERO ===================== -->
+  <section class="page-hero">
+    <div class="container">
+      <p class="eyebrow">Kontakt</p>
+      <h1>Bereit für Ihr Projekt?</h1>
+      <p class="section-lede">Teilen Sie uns Ihr Anliegen mit — wir melden uns innerhalb von 48 Stunden mit einem individuell zugeschnittenen Angebot.</p>
+    </div>
+  </section>
+
+  <!-- ===================== KONTAKT ===================== -->
+  <section>
+    <div class="container">
+      <div class="contact-panel reveal">
+        <div class="contact-inner">
+          <div class="contact-info">
+            <p class="eyebrow">Kontaktdaten</p>
+            <h2>Schreiben Sie uns</h2>
+            <p>Ob Frage, Projektidee oder Angebot — wir freuen uns auf Ihre Nachricht.</p>
+
+            <div class="contact-detail">
+              <div class="contact-detail-item">
+                <span class="label">E-Mail</span>
+                <span class="value"><a href="mailto:Info@samsam-tech.de">Info@samsam-tech.de</a></span>
+              </div>
+              <div class="contact-detail-item">
+                <span class="label">Telefon</span>
+                <span class="value"><a href="tel:+491771482584">+49 1771482584</a></span>
+              </div>
+              <div class="contact-detail-item">
+                <span class="label">Standort</span>
+                <span class="value">Lüdersring 105B, 22547 Hamburg</span>
+              </div>
+            </div>
+          </div>
+
+          <form class="contact-form" id="contact-form">
+            <div class="form-row">
+              <div class="field">
+                <label for="firstname">Vorname *</label>
+                <input type="text" id="firstname" name="firstname" placeholder="Vorname" required>
+              </div>
+              <div class="field">
+                <label for="lastname">Nachname *</label>
+                <input type="text" id="lastname" name="lastname" placeholder="Nachname" required>
+              </div>
+            </div>
+            <div class="field">
+              <label for="company">Unternehmensname</label>
+              <input type="text" id="company" name="company" placeholder="Unternehmensname">
+            </div>
+            <div class="form-row">
+              <div class="field">
+                <label for="email">E-Mail-Adresse *</label>
+                <input type="email" id="email" name="email" placeholder="E-Mail-Adresse" required>
+              </div>
+              <div class="field">
+                <label for="phone">Telefonnummer</label>
+                <input type="tel" id="phone" name="phone" placeholder="+49 ...">
+              </div>
+            </div>
+            <div class="field">
+              <label for="message">Nachricht *</label>
+              <textarea id="message" name="message" rows="4" placeholder="Erzählen Sie uns von Ihrem Projekt..." required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">
+              Einreichen
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="#222" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <p id="form-note" style="font-size:13px;color:var(--color-liquid-mist);display:none;">Danke! Ihr E-Mail-Programm öffnet sich mit Ihrer Anfrage an Samsam-Tech.</p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="index.html" class="brand">
+          <svg class="mark" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <circle cx="17" cy="17" r="16.5" stroke="url(#brandRing2)" />
+            <path d="M22 12.5c0-1.8-1.9-3-5-3-3.4 0-5 1.4-5 3.2 0 1.9 1.8 2.5 4.6 2.9 3.4.5 5.9 1.1 5.9 3.6 0 2-2 3.5-5.5 3.5-3.3 0-5.4-1.2-5.7-3.3" stroke="#EDFFFE" stroke-width="1.6" stroke-linecap="round"/>
+            <defs>
+              <linearGradient id="brandRing2" x1="0" y1="0" x2="34" y2="34" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#00827C"/>
+                <stop offset="1" stop-color="#FDE9FF"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          Samsam-Tech
+        </a>
+        <p>Wir digitalisieren Ihr Leben — individuelle digitale Lösungen für Kunden in Deutschland und weltweit.</p>
+      </div>
+
+      <div class="footer-col">
+        <h5>Navigation</h5>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="dienstleistungen.html">Dienstleistungen</a></li>
+          <li><a href="projekte.html">Projekte</a></li>
+          <li><a href="ueber-uns.html">Über uns</a></li>
+          <li><a href="kontakt.html">Kontakt</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h5>Impressum</h5>
+        <ul>
+          <li><span style="color:var(--color-silver-mist)">Samsam-Tech</span></li>
+          <li><span style="color:var(--color-silver-mist)">Geschäftsführer: Abdulrazak Samsam</span></li>
+          <li><span style="color:var(--color-silver-mist)">Lüdersring 105B, 22547 Hamburg</span></li>
+          <li><a href="mailto:Info@samsam-tech.de">Info@samsam-tech.de</a></li>
+          <li><a href="tel:+491771482584">+49 1771482584</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-contact-row">
+      <div class="footer-contact-block">
+        <a href="mailto:Info@samsam-tech.de">Info@samsam-tech.de</a>
+        <a href="tel:+491771482584">Tel: +49 1771482584</a>
+        <span>Lüdersring 105B</span>
+        <span>22547 Hamburg</span>
+      </div>
+
+      <div class="footer-legal-links">
+        <a href="impressum.html">Cookies</a>
+        <a href="impressum.html">Datenschutz</a>
+        <a href="kontakt.html">FAQ</a>
+      </div>
+    </div>
+
+    <div class="footer-social" aria-label="Social Media">
+      <a href="#" class="social-icon" aria-label="Facebook">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M14 9h2.5V6H14c-1.66 0-3 1.34-3 3v2H9v3h2v6h3v-6h2.4l.6-3H14V9.5c0-.28.22-.5.5-.5H14V9z" fill="currentColor"/></svg>
+      </a>
+      <a href="#" class="social-icon" aria-label="Instagram">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="4" width="16" height="16" rx="4"/><circle cx="12" cy="12" r="3.4"/><circle cx="16.6" cy="7.4" r="0.8" fill="currentColor" stroke="none"/></svg>
+      </a>
+      <a href="#" class="social-icon" aria-label="TikTok">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M14 4c.3 1.8 1.5 3.1 3.4 3.4v2.4c-1.2 0-2.4-.4-3.4-1.1v5.6c0 2.6-2.1 4.7-4.7 4.7S4.6 17 4.6 14.4 6.7 9.7 9.3 9.7c.3 0 .6 0 .9.1v2.5a2.2 2.2 0 1 0 1.6 2.1V4h2.2z" fill="currentColor"/></svg>
+      </a>
+      <a href="#" class="social-icon" aria-label="LinkedIn">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M7 9.5H4.5V19H7V9.5zM5.75 8.2a1.45 1.45 0 1 0 0-2.9 1.45 1.45 0 0 0 0 2.9zM19.5 19h-2.5v-5.1c0-1.2-.4-2-1.5-2-.8 0-1.3.6-1.5 1.1-.1.2-.1.5-.1.8V19H11.4s.03-8.6 0-9.5h2.5v1.3c.3-.5 1-1.3 2.4-1.3 1.8 0 3.2 1.2 3.2 3.7V19z" fill="currentColor"/></svg>
+      </a>
+      <a href="#" class="social-icon" aria-label="X">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M6 5l5.2 6.7L6.2 19H8l4.1-4.9L15.6 19H18l-5.5-7.1L17.2 5h-1.8l-3.8 4.5L8.4 5H6z" fill="currentColor"/></svg>
+      </a>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© <span id="year"></span> Samsam-Tech. Alle Rechte vorbehalten.</p>
+      <p>Design im Auros-Stil</p>
+    </div>
+  </div>
+</footer>
+
+<script type="module" src="assets/js/motion-init.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

@@ -416,6 +416,125 @@ h2.section-heading {
   .scroll-cue { display: none; }
 }
 
+/* ---------- Page banner (interior pages) ---------- */
+.page-hero {
+  position: relative;
+  padding: 168px 0 var(--space-64);
+  overflow: hidden;
+  background:
+    radial-gradient(55% 60% at 85% 0%, rgba(0, 130, 124, 0.28) 0%, rgba(1, 38, 36, 0) 70%),
+    var(--color-liquid-abyss);
+}
+
+.page-hero .container { position: relative; z-index: 1; }
+
+.page-hero h1 {
+  font-size: clamp(2.2rem, 5vw, 3.6rem);
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  margin-bottom: var(--space-20);
+  max-width: 780px;
+}
+
+.page-hero .section-lede { font-size: 1.05rem; }
+
+/* ---------- Services teaser grid (Home) ---------- */
+.service-teaser-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space-20);
+}
+
+.service-teaser-card {
+  background: var(--color-liquid-kelp);
+  border-radius: var(--radius-card);
+  padding: var(--space-32);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+  transition: transform 0.25s ease;
+}
+
+.service-teaser-card:hover { transform: translateY(-4px); }
+
+.service-teaser-card h3 {
+  font-size: 20px;
+  color: var(--color-platinum);
+}
+
+.service-teaser-card p {
+  font-size: 14px;
+  color: var(--color-silver-mist);
+  line-height: 1.5;
+  flex-grow: 1;
+}
+
+.service-teaser-card .btn-arrow-icon { align-self: flex-start; }
+
+.teaser-cta {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--space-48);
+}
+
+/* ---------- Service detail bullets (Dienstleistungen page) ---------- */
+.service-bullets {
+  list-style: none;
+  margin: var(--space-20) 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 440px;
+}
+
+.service-bullets li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--color-liquid-mist);
+  line-height: 1.5;
+}
+
+.service-bullets li::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  margin-top: 6px;
+  background: var(--gradient-bio);
+  flex-shrink: 0;
+}
+
+.feature-row-full {
+  display: block;
+  padding: var(--space-48) 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.feature-row-full:last-child { border-bottom: none; }
+
+.feature-row-full-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-24);
+  margin-bottom: var(--space-16);
+}
+
+.feature-row-full-head h3 {
+  font-size: 28px;
+  letter-spacing: -0.01em;
+}
+
+.feature-row-full p.lede {
+  color: var(--color-silver-mist);
+  font-size: 16px;
+  max-width: 640px;
+  line-height: 1.6;
+}
+
 /* ---------- Intro / About card ---------- */
 .intro-card {
   display: grid;
@@ -900,14 +1019,42 @@ h2.section-heading {
   .footer-top { grid-template-columns: 1fr; gap: var(--space-40); }
 }
 
+/* ---------- Legal content (Impressum) ---------- */
+.legal-content {
+  max-width: 720px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-40);
+}
+
+.legal-block h3 {
+  font-size: 20px;
+  margin-bottom: var(--space-16);
+  color: var(--color-platinum);
+}
+
+.legal-block p {
+  color: var(--color-silver-mist);
+  font-size: 15px;
+  line-height: 1.7;
+  margin-bottom: 8px;
+}
+
+.legal-block a { color: var(--color-liquid-mist); text-decoration: underline; }
+
+.legal-note {
+  background: var(--color-liquid-kelp);
+  border-radius: var(--radius-card);
+  padding: var(--space-24) var(--space-28);
+  font-size: 14px;
+  color: var(--color-silver-mist);
+  line-height: 1.6;
+}
+
 /* ---------- Utility ---------- */
+/* Initial state for elements animated in on scroll by Motion (assets/js/motion-init.js).
+   assets/js/main.js applies a delayed fallback in case the Motion module fails to load. */
 .reveal {
   opacity: 0;
   transform: translateY(24px);
-  transition: opacity 0.7s ease, transform 0.7s ease;
-}
-
-.reveal.is-visible {
-  opacity: 1;
-  transform: translateY(0);
 }
