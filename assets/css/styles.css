@@ -1064,9 +1064,13 @@ h2.section-heading {
 }
 
 /* ---------- Utility ---------- */
-/* Initial state for elements animated in on scroll by Motion (assets/js/motion-init.js).
-   assets/js/main.js applies a delayed fallback in case the Motion module fails to load. */
 .reveal {
   opacity: 0;
   transform: translateY(24px);
+  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
 }

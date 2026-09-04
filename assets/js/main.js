@@ -33,23 +33,63 @@
     });
   }
 
-  /* ---------- Scroll reveal / stat counters ----------
-     Handled by assets/js/motion-init.js via the Motion library (motion.dev).
-     Safety net below ensures content is never permanently hidden if that
-     module fails to load (CDN blocked, offline, etc.). */
+  /* ---------- Scroll reveal ---------- */
   var revealEls = document.querySelectorAll(".reveal");
+  if ("IntersectionObserver" in window) {
+    var revealIo = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            revealIo.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.15, rootMargin: "0px 0px -80px 0px" }
+    );
+    revealEls.forEach(function (el) { revealIo.observe(el); });
+  } else {
+    revealEls.forEach(function (el) { el.classList.add("is-visible"); });
+  }
+
+  /* Safety net: ensure content is never permanently hidden */
   setTimeout(function () {
-    if (document.documentElement.getAttribute("data-motion-ready") === "true") return;
-    revealEls.forEach(function (el) {
-      el.style.opacity = "1";
-      el.style.transform = "none";
-    });
-    document.querySelectorAll(".stat-number[data-count]").forEach(function (el) {
-      var target = el.getAttribute("data-count");
-      var suffix = el.getAttribute("data-suffix") || "";
-      el.textContent = target + suffix;
-    });
+    revealEls.forEach(function (el) { el.classList.add("is-visible"); });
   }, 2500);
+
+  /* ---------- Stat counters ---------- */
+  var statEls = document.querySelectorAll(".stat-number[data-count]");
+  var animateCount = function (el) {
+    var target = parseInt(el.getAttribute("data-count"), 10);
+    var suffix = el.getAttribute("data-suffix") || "";
+    var duration = 1200;
+    var start = null;
+
+    var step = function (ts) {
+      if (!start) start = ts;
+      var progress = Math.min((ts - start) / duration, 1);
+      var eased = 1 - Math.pow(1 - progress, 3);
+      var value = Math.round(target * eased);
+      el.textContent = value + suffix;
+      if (progress < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  };
+
+  if (statEls.length && "IntersectionObserver" in window) {
+    var statIo = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            animateCount(entry.target);
+            statIo.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.6 }
+    );
+    statEls.forEach(function (el) { statIo.observe(el); });
+  }
 
   /* ---------- Contact form -> mailto ---------- */
   var form = document.getElementById("contact-form");
