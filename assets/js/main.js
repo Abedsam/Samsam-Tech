@@ -2,20 +2,23 @@
   "use strict";
 
   /* ---------- Footer year ---------- */
-  var yearEl = document.getElementById("year");
-  if (yearEl) yearEl.textContent = new Date().getFullYear();
+  document.querySelectorAll('[id="year"]').forEach(function (el) {
+    el.textContent = new Date().getFullYear();
+  });
 
   /* ---------- Sticky header shadow-free tint on scroll ---------- */
   var header = document.getElementById("site-header");
-  var onScrollHeader = function () {
-    if (window.scrollY > 12) {
-      header.style.background = "rgba(1, 38, 36, 0.92)";
-    } else {
-      header.style.background = "rgba(1, 38, 36, 0.72)";
-    }
-  };
-  window.addEventListener("scroll", onScrollHeader, { passive: true });
-  onScrollHeader();
+  if (header) {
+    var onScrollHeader = function () {
+      if (window.scrollY > 12) {
+        header.style.background = "rgba(1, 38, 36, 0.92)";
+      } else {
+        header.style.background = "rgba(1, 38, 36, 0.72)";
+      }
+    };
+    window.addEventListener("scroll", onScrollHeader, { passive: true });
+    onScrollHeader();
+  }
 
   /* ---------- Mobile nav ---------- */
   var navToggle = document.getElementById("nav-toggle");
@@ -92,9 +95,11 @@
   }
 
   /* ---------- Contact form -> mailto ---------- */
-  var form = document.getElementById("contact-form");
-  var formNote = document.getElementById("form-note");
-  if (form) {
+  function initContactForm(suffix) {
+    var form = document.getElementById("contact-form" + suffix);
+    var formNote = document.getElementById("form-note" + suffix);
+    if (!form) return;
+
     form.addEventListener("submit", function (e) {
       e.preventDefault();
 
@@ -105,7 +110,7 @@
       var phone = form.phone.value.trim();
       var message = form.message.value.trim();
 
-      var isEnglish = document.documentElement.lang === "en";
+      var isEnglish = document.documentElement.lang === "en" || suffix === "-en";
       var subject = (isEnglish ? "Inquiry via samsam-tech.de from " : "Anfrage über samsam-tech.de von ") + firstname + " " + lastname;
       var bodyLines = isEnglish ? [
         "First name: " + firstname,
@@ -142,8 +147,10 @@
   }
 
   /* ---------- Hero particle sphere ---------- */
-  var canvas = document.getElementById("hero-sphere");
-  if (canvas && canvas.getContext) {
+  function initHeroSphere(suffix) {
+    var canvas = document.getElementById("hero-sphere" + suffix);
+    if (!canvas || !canvas.getContext) return;
+
     var ctx = canvas.getContext("2d");
     var dpr = Math.min(window.devicePixelRatio || 1, 2);
     var size = 0;
@@ -238,11 +245,13 @@
   }
 
   /* ---------- Circular scroll showcase (Home, desktop) ---------- */
-  var circularWrap = document.querySelector(".circular-showcase-wrap");
-  var titleTrack = document.getElementById("circular-titles");
-  var cardTrack = document.getElementById("circular-cards");
+  function initCircularShowcase(suffix) {
+    var titleTrack = document.getElementById("circular-titles" + suffix);
+    var cardTrack = document.getElementById("circular-cards" + suffix);
+    if (!titleTrack || !cardTrack) return;
+    var circularWrap = titleTrack.closest(".circular-showcase-wrap");
+    if (!circularWrap) return;
 
-  if (circularWrap && titleTrack && cardTrack) {
     var titleItems = Array.prototype.slice.call(titleTrack.children);
     var cardItems = Array.prototype.slice.call(cardTrack.children);
     var itemCount = titleItems.length;
@@ -306,8 +315,10 @@
   }
 
   /* ---------- Elastic process accordion (Wie arbeiten wir) ---------- */
-  var elasticProcess = document.getElementById("elastic-process");
-  if (elasticProcess) {
+  function initElasticProcess(suffix) {
+    var elasticProcess = document.getElementById("elastic-process" + suffix);
+    if (!elasticProcess) return;
+
     var elasticPanels = Array.prototype.slice.call(elasticProcess.querySelectorAll(".elastic-panel"));
     var setActivePanel = function (panel) {
       elasticPanels.forEach(function (p) {
@@ -322,8 +333,10 @@
   }
 
   /* ---------- Sticky stacking service cards (Dienstleistungen) ---------- */
-  var stickyStack = document.getElementById("sticky-stack");
-  if (stickyStack) {
+  function initStickyStack(suffix) {
+    var stickyStack = document.getElementById("sticky-stack" + suffix);
+    if (!stickyStack) return;
+
     var stackCards = Array.prototype.slice.call(stickyStack.querySelectorAll(".sticky-stack-card"));
     var stackCount = stackCards.length;
     var stackReduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -363,18 +376,25 @@
   }
 
   /* ---------- Project image-expansion slider + lightbox (Projekte) ---------- */
-  var projectTrack = document.getElementById("project-track");
-  if (projectTrack) {
-    var projectData = [
+  function initProjectSlider(suffix) {
+    var projectTrack = document.getElementById("project-track" + suffix);
+    if (!projectTrack) return;
+    var projectSlider = document.getElementById("project-slider" + suffix);
+
+    var projectData = suffix === "-en" ? [
+      { title: "SJ Corporate Consultants", desc: "Corporate website for a consulting firm in Dubai." },
+      { title: "Athlonix", desc: "Modern online shop — currently in development." },
+      { title: "Your Idea, Our Execution", desc: "Have a project in mind? We'd love to bring it to life with you." }
+    ] : [
       { title: "SJ Corporate Consultants", desc: "Corporate-Website für ein Beratungsunternehmen in Dubai." },
       { title: "Athlonix", desc: "Moderner Online-Shop — aktuell in Entwicklung." },
       { title: "Ihre Idee, unsere Umsetzung", desc: "Sie haben ein Projekt im Kopf? Wir freuen uns, es gemeinsam mit Ihnen umzusetzen." }
     ];
 
     var projectCards = Array.prototype.slice.call(projectTrack.querySelectorAll(".project-card"));
-    var projectDots = Array.prototype.slice.call(document.querySelectorAll(".project-dot"));
-    var projectPrev = document.getElementById("project-prev");
-    var projectNext = document.getElementById("project-next");
+    var projectDots = Array.prototype.slice.call((projectSlider || document).querySelectorAll(".project-dot"));
+    var projectPrev = document.getElementById("project-prev" + suffix);
+    var projectNext = document.getElementById("project-next" + suffix);
     var projectCount = projectCards.length;
     var currentProjectIndex = 0;
 
@@ -410,13 +430,13 @@
     }, { passive: true });
 
     /* Lightbox */
-    var lightbox = document.getElementById("project-lightbox");
-    var lightboxFrame = document.getElementById("lightbox-frame");
-    var lightboxTitle = document.getElementById("lightbox-title");
-    var lightboxDesc = document.getElementById("lightbox-desc");
-    var lightboxClose = document.getElementById("lightbox-close");
-    var lightboxPrev = document.getElementById("lightbox-prev");
-    var lightboxNext = document.getElementById("lightbox-next");
+    var lightbox = document.getElementById("project-lightbox" + suffix);
+    var lightboxFrame = document.getElementById("lightbox-frame" + suffix);
+    var lightboxTitle = document.getElementById("lightbox-title" + suffix);
+    var lightboxDesc = document.getElementById("lightbox-desc" + suffix);
+    var lightboxClose = document.getElementById("lightbox-close" + suffix);
+    var lightboxPrev = document.getElementById("lightbox-prev" + suffix);
+    var lightboxNext = document.getElementById("lightbox-next" + suffix);
     var lightboxIndex = 0;
 
     function openLightbox(index) {
@@ -439,7 +459,7 @@
     projectCards.forEach(function (card, i) {
       card.addEventListener("click", function () { openLightbox(i); });
     });
-    var projectCtaContact = document.getElementById("project-cta-contact");
+    var projectCtaContact = document.getElementById("project-cta-contact" + suffix);
     if (projectCtaContact) {
       projectCtaContact.addEventListener("click", function (e) { e.stopPropagation(); });
     }
@@ -454,17 +474,19 @@
     if (lightboxNext) lightboxNext.addEventListener("click", function () { openLightbox((lightboxIndex + 1) % projectCount); });
 
     document.addEventListener("keydown", function (e) {
-      if (!lightbox.classList.contains("is-open")) return;
+      if (!lightbox || !lightbox.classList.contains("is-open")) return;
       if (e.key === "Escape") closeLightbox();
       if (e.key === "ArrowLeft") openLightbox((lightboxIndex - 1 + projectCount) % projectCount);
       if (e.key === "ArrowRight") openLightbox((lightboxIndex + 1) % projectCount);
     });
   }
 
-  /* FAQ tabs + accordion */
-  var faqTabsWrap = document.getElementById("faq-tabs");
-  var faqPanelsWrap = document.getElementById("faq-panels");
-  if (faqTabsWrap && faqPanelsWrap) {
+  /* ---------- FAQ tabs + accordion ---------- */
+  function initFaq(suffix) {
+    var faqTabsWrap = document.getElementById("faq-tabs" + suffix);
+    var faqPanelsWrap = document.getElementById("faq-panels" + suffix);
+    if (!faqTabsWrap || !faqPanelsWrap) return;
+
     var faqTabs = Array.prototype.slice.call(faqTabsWrap.querySelectorAll(".faq-tab"));
     var faqPanels = Array.prototype.slice.call(faqPanelsWrap.querySelectorAll(".faq-panel"));
 
@@ -509,5 +531,16 @@
 
     faqPanels.forEach(setupFaqAccordion);
   }
+
+  /* ---------- Init: real site uses "", the combined preview also inits the "-en" copies ---------- */
+  ["", "-en"].forEach(function (suffix) {
+    initContactForm(suffix);
+    initHeroSphere(suffix);
+    initCircularShowcase(suffix);
+    initElasticProcess(suffix);
+    initStickyStack(suffix);
+    initProjectSlider(suffix);
+    initFaq(suffix);
+  });
 
 })();
