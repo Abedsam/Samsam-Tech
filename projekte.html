@@ -64,22 +64,76 @@
   <!-- ===================== PROJECTS ===================== -->
   <section>
     <div class="container">
-      <div class="values-grid" style="margin-bottom: var(--space-64);">
-        <div class="value-card reveal">
-          <div class="value-index">Projekt 1</div>
-          <h4>SJ Corporate Consultants</h4>
-          <p>Corporate-Website für ein Beratungsunternehmen in Dubai.</p>
+      <div class="project-slider reveal" id="project-slider">
+        <div class="project-slider-head">
+          <p class="eyebrow" style="margin-bottom:0">Ausgewählte Projekte</p>
         </div>
-        <div class="value-card reveal">
-          <div class="value-index">Projekt 2</div>
-          <h4>Athlonix</h4>
-          <p>Moderner Online-Shop — aktuell in Entwicklung.</p>
+
+        <div class="project-track" id="project-track">
+          <div class="project-card" data-index="0">
+            <div class="project-card-bg" aria-hidden="true"><span></span><span></span></div>
+            <div class="project-card-overlay"></div>
+            <span class="project-card-badge">Live</span>
+            <div class="project-card-content">
+              <h3>SJ Corporate Consultants</h3>
+              <span class="project-card-cta">Mehr erfahren</span>
+            </div>
+          </div>
+          <div class="project-card" data-index="1">
+            <div class="project-card-bg" aria-hidden="true"><span></span><span></span></div>
+            <div class="project-card-overlay"></div>
+            <span class="project-card-badge">In Entwicklung</span>
+            <div class="project-card-content">
+              <h3>Athlonix</h3>
+              <span class="project-card-cta">Mehr erfahren</span>
+            </div>
+          </div>
+          <div class="project-card" data-index="2">
+            <div class="project-card-bg" aria-hidden="true"><span></span><span></span></div>
+            <div class="project-card-overlay"></div>
+            <span class="project-card-badge">Jetzt starten</span>
+            <div class="project-card-content">
+              <h3>Ihre Idee, unsere Umsetzung</h3>
+              <a href="kontakt.html" class="project-card-cta" id="project-cta-contact">Projekt anfragen</a>
+            </div>
+          </div>
         </div>
-        <div class="value-card reveal">
-          <div class="value-index">Ihr Projekt</div>
-          <h4>Ihre Idee, unsere Umsetzung</h4>
-          <p>Sie haben ein Projekt im Kopf? Wir freuen uns, es gemeinsam mit Ihnen umzusetzen.</p>
+
+        <div class="project-slider-nav">
+          <div class="project-dots" id="project-dots">
+            <span class="project-dot is-active" data-index="0"></span>
+            <span class="project-dot" data-index="1"></span>
+            <span class="project-dot" data-index="2"></span>
+          </div>
+          <div class="project-arrows">
+            <button class="project-arrow" id="project-prev" aria-label="Vorheriges Projekt">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 19l-7-7 7-7"/></svg>
+            </button>
+            <button class="project-arrow" id="project-next" aria-label="Nächstes Projekt">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>
+            </button>
+          </div>
         </div>
+      </div>
+
+      <!-- Lightbox -->
+      <div class="project-lightbox" id="project-lightbox">
+        <button class="project-lightbox-close" id="lightbox-close" aria-label="Schließen">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+        <button class="project-lightbox-prev" id="lightbox-prev" aria-label="Vorheriges Projekt">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 19l-7-7 7-7"/></svg>
+        </button>
+        <div>
+          <div class="project-lightbox-frame" id="lightbox-frame"></div>
+          <div class="project-lightbox-caption">
+            <h3 id="lightbox-title"></h3>
+            <p id="lightbox-desc"></p>
+          </div>
+        </div>
+        <button class="project-lightbox-next" id="lightbox-next" aria-label="Nächstes Projekt">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>
+        </button>
       </div>
 
       <div class="projects-panel reveal">

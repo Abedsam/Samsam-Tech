@@ -351,4 +351,103 @@
       updateStack();
     }
   }
+
+  /* ---------- Project image-expansion slider + lightbox (Projekte) ---------- */
+  var projectTrack = document.getElementById("project-track");
+  if (projectTrack) {
+    var projectData = [
+      { title: "SJ Corporate Consultants", desc: "Corporate-Website für ein Beratungsunternehmen in Dubai." },
+      { title: "Athlonix", desc: "Moderner Online-Shop — aktuell in Entwicklung." },
+      { title: "Ihre Idee, unsere Umsetzung", desc: "Sie haben ein Projekt im Kopf? Wir freuen uns, es gemeinsam mit Ihnen umzusetzen." }
+    ];
+
+    var projectCards = Array.prototype.slice.call(projectTrack.querySelectorAll(".project-card"));
+    var projectDots = Array.prototype.slice.call(document.querySelectorAll(".project-dot"));
+    var projectPrev = document.getElementById("project-prev");
+    var projectNext = document.getElementById("project-next");
+    var projectCount = projectCards.length;
+    var currentProjectIndex = 0;
+
+    function scrollToProject(index) {
+      index = Math.max(0, Math.min(projectCount - 1, index));
+      currentProjectIndex = index;
+      var card = projectCards[index];
+      if (card) {
+        projectTrack.scrollTo({ left: card.offsetLeft - projectTrack.offsetLeft, behavior: "smooth" });
+      }
+      projectDots.forEach(function (dot, i) { dot.classList.toggle("is-active", i === index); });
+    }
+
+    projectDots.forEach(function (dot) {
+      dot.addEventListener("click", function () { scrollToProject(parseInt(dot.getAttribute("data-index"), 10)); });
+    });
+    if (projectPrev) projectPrev.addEventListener("click", function () { scrollToProject(currentProjectIndex - 1); });
+    if (projectNext) projectNext.addEventListener("click", function () { scrollToProject(currentProjectIndex + 1); });
+
+    var projectScrollTimer;
+    projectTrack.addEventListener("scroll", function () {
+      clearTimeout(projectScrollTimer);
+      projectScrollTimer = setTimeout(function () {
+        var nearest = 0;
+        var minDiff = Infinity;
+        projectCards.forEach(function (card, i) {
+          var diff = Math.abs(card.offsetLeft - projectTrack.offsetLeft - projectTrack.scrollLeft);
+          if (diff < minDiff) { minDiff = diff; nearest = i; }
+        });
+        currentProjectIndex = nearest;
+        projectDots.forEach(function (dot, i) { dot.classList.toggle("is-active", i === nearest); });
+      }, 120);
+    }, { passive: true });
+
+    /* Lightbox */
+    var lightbox = document.getElementById("project-lightbox");
+    var lightboxFrame = document.getElementById("lightbox-frame");
+    var lightboxTitle = document.getElementById("lightbox-title");
+    var lightboxDesc = document.getElementById("lightbox-desc");
+    var lightboxClose = document.getElementById("lightbox-close");
+    var lightboxPrev = document.getElementById("lightbox-prev");
+    var lightboxNext = document.getElementById("lightbox-next");
+    var lightboxIndex = 0;
+
+    function openLightbox(index) {
+      lightboxIndex = index;
+      var data = projectData[index];
+      lightboxFrame.className = "project-lightbox-frame project-card";
+      lightboxFrame.setAttribute("data-index", index);
+      lightboxFrame.innerHTML =
+        '<div class="project-card-bg" aria-hidden="true"><span></span><span></span></div>' +
+        '<div class="project-card-overlay"></div>';
+      lightboxTitle.textContent = data.title;
+      lightboxDesc.textContent = data.desc;
+      lightbox.classList.add("is-open");
+    }
+
+    function closeLightbox() {
+      lightbox.classList.remove("is-open");
+    }
+
+    projectCards.forEach(function (card, i) {
+      card.addEventListener("click", function () { openLightbox(i); });
+    });
+    var projectCtaContact = document.getElementById("project-cta-contact");
+    if (projectCtaContact) {
+      projectCtaContact.addEventListener("click", function (e) { e.stopPropagation(); });
+    }
+
+    if (lightboxClose) lightboxClose.addEventListener("click", closeLightbox);
+    if (lightbox) {
+      lightbox.addEventListener("click", function (e) {
+        if (e.target === lightbox) closeLightbox();
+      });
+    }
+    if (lightboxPrev) lightboxPrev.addEventListener("click", function () { openLightbox((lightboxIndex - 1 + projectCount) % projectCount); });
+    if (lightboxNext) lightboxNext.addEventListener("click", function () { openLightbox((lightboxIndex + 1) % projectCount); });
+
+    document.addEventListener("keydown", function (e) {
+      if (!lightbox.classList.contains("is-open")) return;
+      if (e.key === "Escape") closeLightbox();
+      if (e.key === "ArrowLeft") openLightbox((lightboxIndex - 1 + projectCount) % projectCount);
+      if (e.key === "ArrowRight") openLightbox((lightboxIndex + 1) % projectCount);
+    });
+  }
 })();
