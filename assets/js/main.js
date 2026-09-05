@@ -471,10 +471,12 @@
     function openLightbox(index) {
       lightboxIndex = index;
       var data = projectData[index];
+      var logoImg = projectCards[index].querySelector(".project-card-logo img");
       lightboxFrame.className = "project-lightbox-frame project-card";
       lightboxFrame.setAttribute("data-index", index);
       lightboxFrame.innerHTML =
         '<div class="project-card-bg" aria-hidden="true"><span></span><span></span></div>' +
+        (logoImg ? '<div class="project-card-logo"><img src="' + logoImg.getAttribute("src") + '" alt="' + logoImg.getAttribute("alt") + '"></div>' : "") +
         '<div class="project-card-overlay"></div>';
       lightboxTitle.textContent = data.title;
       lightboxDesc.textContent = data.desc;
@@ -488,10 +490,9 @@
     projectCards.forEach(function (card, i) {
       card.addEventListener("click", function () { openLightbox(i); });
     });
-    var projectCtaContact = document.getElementById("project-cta-contact" + suffix);
-    if (projectCtaContact) {
-      projectCtaContact.addEventListener("click", function (e) { e.stopPropagation(); });
-    }
+    projectTrack.querySelectorAll(".project-card-cta[href]").forEach(function (link) {
+      link.addEventListener("click", function (e) { e.stopPropagation(); });
+    });
 
     if (lightboxClose) lightboxClose.addEventListener("click", closeLightbox);
     if (lightbox) {
