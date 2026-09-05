@@ -105,8 +105,18 @@
       var phone = form.phone.value.trim();
       var message = form.message.value.trim();
 
-      var subject = "Anfrage über samsam-tech.de von " + firstname + " " + lastname;
-      var bodyLines = [
+      var isEnglish = document.documentElement.lang === "en";
+      var subject = (isEnglish ? "Inquiry via samsam-tech.de from " : "Anfrage über samsam-tech.de von ") + firstname + " " + lastname;
+      var bodyLines = isEnglish ? [
+        "First name: " + firstname,
+        "Last name: " + lastname,
+        "Company: " + (company || "-"),
+        "Email: " + email,
+        "Phone: " + (phone || "-"),
+        "",
+        "Message:",
+        message
+      ] : [
         "Vorname: " + firstname,
         "Nachname: " + lastname,
         "Unternehmen: " + (company || "-"),
