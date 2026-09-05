@@ -310,4 +310,45 @@
     });
     setActivePanel(elasticPanels[1] || elasticPanels[0]);
   }
+
+  /* ---------- Sticky stacking service cards (Dienstleistungen) ---------- */
+  var stickyStack = document.getElementById("sticky-stack");
+  if (stickyStack) {
+    var stackCards = Array.prototype.slice.call(stickyStack.querySelectorAll(".sticky-stack-card"));
+    var stackCount = stackCards.length;
+    var stackReduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    function renderStack(progress) {
+      stackCards.forEach(function (card, i) {
+        var targetScale = Math.max(0.6, 1 - (stackCount - i - 1) * 0.08);
+        var rangeStart = i / stackCount;
+        var t = rangeStart >= 1 ? 0 : Math.max(0, Math.min(1, (progress - rangeStart) / (1 - rangeStart)));
+        var scale = 1 - (1 - targetScale) * t;
+        var stagger = i * 14;
+        card.style.transform = "translateY(" + stagger + "px) scale(" + scale + ")";
+      });
+    }
+
+    renderStack(0);
+
+    if (!stackReduceMotion) {
+      var stackTicking = false;
+      function updateStack() {
+        stackTicking = false;
+        var rect = stickyStack.getBoundingClientRect();
+        var total = stickyStack.offsetHeight - window.innerHeight;
+        var progress = total > 0 ? -rect.top / total : 0;
+        progress = Math.max(0, Math.min(1, progress));
+        renderStack(progress);
+      }
+      window.addEventListener("scroll", function () {
+        if (!stackTicking) {
+          stackTicking = true;
+          requestAnimationFrame(updateStack);
+        }
+      }, { passive: true });
+      window.addEventListener("resize", updateStack);
+      updateStack();
+    }
+  }
 })();
