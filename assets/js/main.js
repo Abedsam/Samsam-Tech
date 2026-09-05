@@ -450,4 +450,54 @@
       if (e.key === "ArrowRight") openLightbox((lightboxIndex + 1) % projectCount);
     });
   }
+
+  /* FAQ tabs + accordion */
+  var faqTabsWrap = document.getElementById("faq-tabs");
+  var faqPanelsWrap = document.getElementById("faq-panels");
+  if (faqTabsWrap && faqPanelsWrap) {
+    var faqTabs = Array.prototype.slice.call(faqTabsWrap.querySelectorAll(".faq-tab"));
+    var faqPanels = Array.prototype.slice.call(faqPanelsWrap.querySelectorAll(".faq-panel"));
+
+    function setActiveFaqTab(category) {
+      faqTabs.forEach(function (tab) {
+        tab.classList.toggle("is-active", tab.getAttribute("data-category") === category);
+      });
+      faqPanels.forEach(function (panel) {
+        panel.classList.toggle("is-active", panel.getAttribute("data-category") === category);
+      });
+    }
+
+    faqTabs.forEach(function (tab) {
+      tab.addEventListener("click", function () {
+        setActiveFaqTab(tab.getAttribute("data-category"));
+      });
+    });
+
+    function setupFaqAccordion(panel) {
+      var items = Array.prototype.slice.call(panel.querySelectorAll(".faq-item"));
+      items.forEach(function (item) {
+        var question = item.querySelector(".faq-question");
+        var answer = item.querySelector(".faq-answer");
+
+        question.addEventListener("click", function () {
+          var isOpen = item.classList.contains("is-open");
+
+          items.forEach(function (other) {
+            other.classList.remove("is-open");
+            other.querySelector(".faq-question").setAttribute("aria-expanded", "false");
+            other.querySelector(".faq-answer").style.maxHeight = "";
+          });
+
+          if (!isOpen) {
+            item.classList.add("is-open");
+            question.setAttribute("aria-expanded", "true");
+            answer.style.maxHeight = answer.scrollHeight + "px";
+          }
+        });
+      });
+    }
+
+    faqPanels.forEach(setupFaqAccordion);
+  }
+
 })();
