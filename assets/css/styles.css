@@ -483,10 +483,92 @@ h2.section-heading {
 
 .service-teaser-card .btn-arrow-icon { align-self: flex-start; }
 
+/* Grid is the mobile/tablet fallback for the circular showcase below */
+@media (min-width: 900px) {
+  .service-teaser-grid { display: none; }
+}
+
 .teaser-cta {
   display: flex;
   justify-content: center;
   margin-top: var(--space-48);
+}
+
+/* ---------- Circular scroll showcase (Home, desktop) ---------- */
+.circular-showcase-wrap {
+  display: none;
+}
+
+@media (min-width: 900px) {
+  .circular-showcase-wrap {
+    display: block;
+    position: relative;
+    height: 340vh;
+    margin-top: var(--space-24);
+  }
+}
+
+.circular-showcase-sticky {
+  position: sticky;
+  top: 96px;
+  height: calc(100vh - 96px);
+  max-height: 720px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.circular-col {
+  position: relative;
+  flex: 1 1 50%;
+  height: 70%;
+}
+
+.circular-title-item {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 88%;
+  max-width: 420px;
+  text-align: center;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+.circular-title-item h3 {
+  font-size: clamp(1.3rem, 2.3vw, 1.9rem);
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: var(--color-platinum);
+  margin-bottom: 10px;
+}
+
+.circular-title-item p {
+  font-size: 14px;
+  color: var(--color-silver-mist);
+  line-height: 1.5;
+}
+
+.circular-card-item {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 190px;
+  height: 190px;
+  margin-left: -95px;
+  margin-top: -95px;
+  border-radius: var(--radius-card);
+  background: var(--color-liquid-kelp);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  will-change: transform, opacity;
+}
+
+.circular-card-item svg {
+  width: 60px;
+  height: 60px;
+  color: var(--color-liquid-mist);
 }
 
 /* ---------- Service detail bullets (Dienstleistungen page) ---------- */
