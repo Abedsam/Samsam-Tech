@@ -369,7 +369,7 @@ h2.section-heading {
     var(--color-liquid-abyss);
 }
 
-#hero-sphere {
+.hero-morph {
   position: absolute;
   top: 50%;
   right: -6%;
@@ -378,9 +378,32 @@ h2.section-heading {
   height: 780px;
   max-width: 60vw;
   max-height: 60vw;
-  opacity: 0.9;
   pointer-events: none;
 }
+
+.hero-morph-track {
+  position: absolute;
+  inset: 0;
+}
+
+.hero-morph-card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 54px;
+  height: 74px;
+  border-radius: 12px;
+  opacity: 0;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3);
+  transition: transform 1s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.9s ease;
+  will-change: transform, opacity;
+}
+
+.hero-morph-card:nth-child(5n+1) { background: var(--gradient-bio); }
+.hero-morph-card:nth-child(5n+2) { background: linear-gradient(135deg, rgba(253, 233, 255, 0.85), rgba(0, 130, 124, 0.55)); }
+.hero-morph-card:nth-child(5n+3) { background: var(--color-liquid-kelp); border: 1px solid rgba(255, 255, 255, 0.14); }
+.hero-morph-card:nth-child(5n+4) { background: linear-gradient(135deg, rgba(203, 255, 252, 0.85), rgba(1, 38, 36, 0.15)); }
+.hero-morph-card:nth-child(5n+5) { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.16); box-shadow: inset 0 0 20px rgba(203, 255, 252, 0.15); }
 
 .hero-content {
   position: relative;
@@ -459,7 +482,7 @@ h2.section-heading {
 }
 
 @media (max-width: 900px) {
-  #hero-sphere { opacity: 0.35; right: -20%; }
+  .hero-morph { opacity: 0.35; right: -20%; }
   .scroll-cue { display: none; }
 }
 

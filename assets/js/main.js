@@ -175,101 +175,96 @@
     });
   }
 
-  /* ---------- Hero particle sphere ---------- */
-  function initHeroSphere(suffix) {
-    var canvas = document.getElementById("hero-sphere" + suffix);
-    if (!canvas || !canvas.getContext) return;
+  /* ---------- Hero scroll-morph cards ---------- */
+  function initHeroMorph(suffix) {
+    var morphEl = document.getElementById("hero-morph" + suffix);
+    var track = document.getElementById("hero-morph-track" + suffix);
+    if (!morphEl || !track) return;
 
-    var ctx = canvas.getContext("2d");
-    var dpr = Math.min(window.devicePixelRatio || 1, 2);
-    var size = 0;
-    var particles = [];
-    var rotation = 0;
+    var heroEl = morphEl.closest(".hero");
+    var cards = Array.prototype.slice.call(track.children);
+    var count = cards.length;
+    if (!count) return;
+
     var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var radius = 230;
 
-    function resize() {
-      var rect = canvas.getBoundingClientRect();
-      size = Math.max(rect.width, rect.height) || 600;
-      canvas.width = size * dpr;
-      canvas.height = size * dpr;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    function circlePosition(i) {
+      var angle = (i / count) * Math.PI * 2;
+      return { x: Math.cos(angle) * radius, y: Math.sin(angle) * radius };
     }
 
-    function buildParticles(count) {
-      particles = [];
-      var goldenAngle = Math.PI * (3 - Math.sqrt(5));
-      for (var i = 0; i < count; i++) {
-        var t = i / count;
-        var yAxis = 1 - t * 2;
-        var radiusAtY = Math.sqrt(1 - yAxis * yAxis);
-        var theta = goldenAngle * i;
-        particles.push({
-          x: Math.cos(theta) * radiusAtY,
-          y: yAxis,
-          z: Math.sin(theta) * radiusAtY,
-          isAccent: Math.random() < 0.12
-        });
+    function setCardTransform(card, x, y, opacity, scale) {
+      card.style.transform = "translate(-50%, -50%) translate(" + x + "px, " + y + "px) scale(" + scale + ")";
+      card.style.opacity = opacity;
+    }
+
+    var scatterPositions = cards.map(function () {
+      return { x: (Math.random() - 0.5) * 700, y: (Math.random() - 0.5) * 700 };
+    });
+
+    if (reduceMotion) {
+      cards.forEach(function (card, i) {
+        var c = circlePosition(i);
+        card.style.transition = "none";
+        setCardTransform(card, c.x, c.y, 1, 1);
+      });
+      return;
+    }
+
+    cards.forEach(function (card, i) {
+      var s = scatterPositions[i];
+      setCardTransform(card, s.x, s.y, 0, 0.6);
+    });
+
+    setTimeout(function () {
+      cards.forEach(function (card, i) {
+        var c = circlePosition(i);
+        setCardTransform(card, c.x, c.y, 1, 1);
+      });
+    }, 200);
+
+    /* Mouse parallax */
+    if (heroEl) {
+      heroEl.addEventListener("mousemove", function (e) {
+        var rect = heroEl.getBoundingClientRect();
+        var nx = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+        track.style.transform = "translateX(" + (nx * 20) + "px)";
+      });
+    }
+
+    /* After the intro settles, drift + fade the circle as the hero scrolls past */
+    var scrollDriven = false;
+    var ticking = false;
+
+    function updateMorph() {
+      ticking = false;
+      if (!scrollDriven || !heroEl) return;
+      var heroRect = heroEl.getBoundingClientRect();
+      var progress = Math.min(1, Math.max(0, -heroRect.top / (heroRect.height * 0.8)));
+
+      cards.forEach(function (card, i) {
+        var c = circlePosition(i);
+        var driftX = c.x * (1 + progress * 0.9);
+        var driftY = c.y * (1 + progress * 0.9) - progress * 120;
+        setCardTransform(card, driftX, driftY, Math.max(0, 1 - progress), Math.max(0.5, 1 - progress * 0.3));
+      });
+    }
+
+    setTimeout(function () {
+      scrollDriven = true;
+      cards.forEach(function (card) { card.style.transition = "none"; });
+      updateMorph();
+    }, 1300);
+
+    window.addEventListener("scroll", function () {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(updateMorph);
       }
-    }
-
-    function draw() {
-      var w = size, h = size;
-      ctx.clearRect(0, 0, w, h);
-      var cx = w / 2, cy = h / 2;
-      var R = w * 0.36;
-
-      var cosR = Math.cos(rotation), sinR = Math.sin(rotation);
-      var cosT = Math.cos(rotation * 0.4), sinT = Math.sin(rotation * 0.4);
-
-      var projected = particles.map(function (p) {
-        var x1 = p.x * cosR - p.z * sinR;
-        var z1 = p.x * sinR + p.z * cosR;
-        var y1 = p.y * cosT - z1 * sinT;
-        var z2 = p.y * sinT + z1 * cosT;
-
-        var scale = (z2 + 1.6) / 2.6;
-        return {
-          sx: cx + x1 * R,
-          sy: cy + y1 * R,
-          scale: scale,
-          isAccent: p.isAccent
-        };
-      });
-
-      projected.sort(function (a, b) { return a.scale - b.scale; });
-
-      projected.forEach(function (p) {
-        var r = 1.1 + p.scale * 2.2;
-        var alpha = 0.15 + p.scale * 0.75;
-        ctx.beginPath();
-        ctx.arc(p.sx, p.sy, r, 0, Math.PI * 2);
-        if (p.isAccent) {
-          ctx.fillStyle = "rgba(253, 233, 255, " + alpha + ")";
-        } else {
-          ctx.fillStyle = "rgba(203, 255, 252, " + (alpha * 0.9) + ")";
-        }
-        ctx.fill();
-      });
-    }
-
-    function tick() {
-      rotation += 0.0022;
-      draw();
-      if (!reduceMotion) requestAnimationFrame(tick);
-    }
-
-    resize();
-    buildParticles(window.innerWidth < 720 ? 380 : 720);
-    draw();
-    if (!reduceMotion) requestAnimationFrame(tick);
-
-    var resizeTimer;
+    }, { passive: true });
     window.addEventListener("resize", function () {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(function () {
-        resize();
-        draw();
-      }, 150);
+      if (scrollDriven) updateMorph();
     });
   }
 
@@ -565,7 +560,7 @@
   /* ---------- Init: real site uses "", the combined preview also inits the "-en" copies ---------- */
   ["", "-en"].forEach(function (suffix) {
     initContactForm(suffix);
-    initHeroSphere(suffix);
+    initHeroMorph(suffix);
     initCircularShowcase(suffix);
     initElasticProcess(suffix);
     initStickyStack(suffix);
