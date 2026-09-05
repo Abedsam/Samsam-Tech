@@ -294,4 +294,20 @@
       updateCircular();
     }
   }
+
+  /* ---------- Elastic process accordion (Wie arbeiten wir) ---------- */
+  var elasticProcess = document.getElementById("elastic-process");
+  if (elasticProcess) {
+    var elasticPanels = Array.prototype.slice.call(elasticProcess.querySelectorAll(".elastic-panel"));
+    var setActivePanel = function (panel) {
+      elasticPanels.forEach(function (p) {
+        p.classList.toggle("is-active", p === panel);
+      });
+    };
+    elasticPanels.forEach(function (panel) {
+      panel.addEventListener("mouseenter", function () { setActivePanel(panel); });
+      panel.addEventListener("click", function () { setActivePanel(panel); });
+    });
+    setActivePanel(elasticPanels[1] || elasticPanels[0]);
+  }
 })();
