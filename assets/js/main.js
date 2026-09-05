@@ -189,7 +189,7 @@
 
     var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     var desktopQuery = window.matchMedia("(min-width: 900px)");
-    var radius = 170;
+    var radius = 200;
     var restOpacity = 0.4;
     var introContentOpacity = 0.15;
     var introContentOffset = 40;
@@ -200,7 +200,7 @@
     }
 
     function linePosition(i) {
-      var spacing = 48;
+      var spacing = 64;
       var totalWidth = (count - 1) * spacing;
       return { x: i * spacing - totalWidth / 2, y: 0 };
     }
