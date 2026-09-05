@@ -357,16 +357,25 @@ h2.section-heading {
 /* ---------- Hero ---------- */
 .hero {
   position: relative;
+  background:
+    radial-gradient(60% 50% at 78% 32%, rgba(0, 130, 124, 0.35) 0%, rgba(1, 38, 36, 0) 70%),
+    radial-gradient(45% 40% at 85% 60%, rgba(253, 233, 255, 0.10) 0%, rgba(1, 38, 36, 0) 70%),
+    var(--color-liquid-abyss);
+}
+
+.hero-sticky {
+  position: relative;
   min-height: 100vh;
   display: flex;
   align-items: center;
   padding-top: 160px;
   padding-bottom: 80px;
   overflow: hidden;
-  background:
-    radial-gradient(60% 50% at 78% 32%, rgba(0, 130, 124, 0.35) 0%, rgba(1, 38, 36, 0) 70%),
-    radial-gradient(45% 40% at 85% 60%, rgba(253, 233, 255, 0.10) 0%, rgba(1, 38, 36, 0) 70%),
-    var(--color-liquid-abyss);
+}
+
+@media (min-width: 900px) {
+  .hero { height: 180vh; }
+  .hero-sticky { position: sticky; top: 0; height: 100vh; }
 }
 
 .hero-morph {
@@ -410,6 +419,7 @@ h2.section-heading {
   position: relative;
   z-index: 2;
   max-width: 700px;
+  will-change: transform, opacity;
 }
 
 .hero-title {

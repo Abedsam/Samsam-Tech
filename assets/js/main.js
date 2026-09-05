@@ -182,12 +182,17 @@
     if (!morphEl || !track) return;
 
     var heroEl = morphEl.closest(".hero");
+    var heroContent = document.getElementById("hero-content" + suffix);
     var cards = Array.prototype.slice.call(track.children);
     var count = cards.length;
     if (!count) return;
 
     var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var desktopQuery = window.matchMedia("(min-width: 900px)");
     var radius = 170;
+    var restOpacity = 0.4;
+    var introContentOpacity = 0.15;
+    var introContentOffset = 40;
 
     function circlePosition(i) {
       var angle = (i / count) * Math.PI * 2;
@@ -209,6 +214,12 @@
       card.style.opacity = opacity;
     }
 
+    function resetHeroContent() {
+      if (!heroContent) return;
+      heroContent.style.opacity = "";
+      heroContent.style.transform = "";
+    }
+
     var scatterPositions = cards.map(function () {
       return { x: (Math.random() - 0.5) * 700, y: (Math.random() - 0.5) * 700 };
     });
@@ -219,6 +230,7 @@
         card.style.transition = "none";
         setCardTransform(card, c.x, c.y, 1, 1);
       });
+      resetHeroContent();
       return;
     }
 
@@ -227,7 +239,10 @@
       setCardTransform(card, s.x, s.y, 0, 0.6);
     });
 
-    var restOpacity = 0.4;
+    if (heroContent && desktopQuery.matches) {
+      heroContent.style.opacity = introContentOpacity;
+      heroContent.style.transform = "translateY(" + introContentOffset + "px)";
+    }
 
     setTimeout(function () {
       cards.forEach(function (card, i) {
@@ -245,16 +260,19 @@
       });
     }
 
-    /* After the intro settles, morph the circle into a horizontal line as the hero scrolls past */
+    /* After the intro settles, a shared scroll progress (over the tall .hero
+       wrapper, desktop only) both straightens the circle into a line and
+       reveals the headline that starts lower/dimmed. */
     var scrollDriven = false;
     var ticking = false;
 
     function updateMorph() {
       ticking = false;
-      if (!scrollDriven || !heroEl) return;
-      var heroRect = heroEl.getBoundingClientRect();
-      var scrollRange = 320;
-      var progress = Math.min(1, Math.max(0, -heroRect.top / scrollRange));
+      if (!scrollDriven || !heroEl || !desktopQuery.matches) return;
+      var wrapRect = heroEl.getBoundingClientRect();
+      var total = wrapRect.height - window.innerHeight;
+      var progress = total > 0 ? -wrapRect.top / total : 0;
+      progress = Math.min(1, Math.max(0, progress));
 
       cards.forEach(function (card, i) {
         var c = circlePosition(i);
@@ -264,6 +282,11 @@
         var opacity = lerp(restOpacity, 1, progress);
         setCardTransform(card, x, y, opacity, 1);
       });
+
+      if (heroContent) {
+        heroContent.style.opacity = lerp(introContentOpacity, 1, progress);
+        heroContent.style.transform = "translateY(" + lerp(introContentOffset, 0, progress) + "px)";
+      }
     }
 
     setTimeout(function () {
@@ -279,7 +302,11 @@
       }
     }, { passive: true });
     window.addEventListener("resize", function () {
-      if (scrollDriven) updateMorph();
+      if (desktopQuery.matches) {
+        if (scrollDriven) updateMorph();
+      } else {
+        resetHeroContent();
+      }
     });
   }
 
