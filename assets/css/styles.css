@@ -372,13 +372,14 @@ h2.section-heading {
 .hero-morph {
   position: absolute;
   top: 50%;
-  right: -6%;
-  transform: translateY(-50%);
-  width: 780px;
-  height: 780px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px;
+  height: 600px;
   max-width: 60vw;
   max-height: 60vw;
   pointer-events: none;
+  z-index: 1;
 }
 
 .hero-morph-track {
@@ -390,9 +391,9 @@ h2.section-heading {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 54px;
-  height: 74px;
-  border-radius: 12px;
+  width: 42px;
+  height: 58px;
+  border-radius: 10px;
   opacity: 0;
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3);
   transition: transform 1s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.9s ease;
@@ -482,7 +483,7 @@ h2.section-heading {
 }
 
 @media (max-width: 900px) {
-  .hero-morph { opacity: 0.35; right: -20%; }
+  .hero-morph { opacity: 0.35; }
   .scroll-cue { display: none; }
 }
 

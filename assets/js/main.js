@@ -187,11 +187,21 @@
     if (!count) return;
 
     var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    var radius = 230;
+    var radius = 170;
 
     function circlePosition(i) {
       var angle = (i / count) * Math.PI * 2;
       return { x: Math.cos(angle) * radius, y: Math.sin(angle) * radius };
+    }
+
+    function linePosition(i) {
+      var spacing = 48;
+      var totalWidth = (count - 1) * spacing;
+      return { x: i * spacing - totalWidth / 2, y: 0 };
+    }
+
+    function lerp(a, b, t) {
+      return a + (b - a) * t;
     }
 
     function setCardTransform(card, x, y, opacity, scale) {
@@ -217,10 +227,12 @@
       setCardTransform(card, s.x, s.y, 0, 0.6);
     });
 
+    var restOpacity = 0.4;
+
     setTimeout(function () {
       cards.forEach(function (card, i) {
         var c = circlePosition(i);
-        setCardTransform(card, c.x, c.y, 1, 1);
+        setCardTransform(card, c.x, c.y, restOpacity, 1);
       });
     }, 200);
 
@@ -233,7 +245,7 @@
       });
     }
 
-    /* After the intro settles, drift + fade the circle as the hero scrolls past */
+    /* After the intro settles, morph the circle into a horizontal line as the hero scrolls past */
     var scrollDriven = false;
     var ticking = false;
 
@@ -241,13 +253,16 @@
       ticking = false;
       if (!scrollDriven || !heroEl) return;
       var heroRect = heroEl.getBoundingClientRect();
-      var progress = Math.min(1, Math.max(0, -heroRect.top / (heroRect.height * 0.8)));
+      var scrollRange = 320;
+      var progress = Math.min(1, Math.max(0, -heroRect.top / scrollRange));
 
       cards.forEach(function (card, i) {
         var c = circlePosition(i);
-        var driftX = c.x * (1 + progress * 0.9);
-        var driftY = c.y * (1 + progress * 0.9) - progress * 120;
-        setCardTransform(card, driftX, driftY, Math.max(0, 1 - progress), Math.max(0.5, 1 - progress * 0.3));
+        var l = linePosition(i);
+        var x = lerp(c.x, l.x, progress);
+        var y = lerp(c.y, l.y, progress);
+        var opacity = lerp(restOpacity, 1, progress);
+        setCardTransform(card, x, y, opacity, 1);
       });
     }
 
