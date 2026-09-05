@@ -36,6 +36,35 @@
     });
   }
 
+  /* ---------- Dock-style magnetic nav ---------- */
+  function initMagneticNav(nav) {
+    var links = Array.prototype.slice.call(nav.children).filter(function (el) {
+      return el.tagName === "A";
+    });
+    if (!links.length) return;
+    var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduceMotion) return;
+
+    var maxScale = 1.22;
+    var falloff = 70;
+
+    nav.addEventListener("mousemove", function (e) {
+      links.forEach(function (a) {
+        var rect = a.getBoundingClientRect();
+        var center = rect.left + rect.width / 2;
+        var dist = Math.abs(e.clientX - center);
+        var t = Math.max(0, 1 - dist / falloff);
+        var scale = 1 + t * (maxScale - 1);
+        a.style.transform = "scale(" + scale.toFixed(3) + ")";
+      });
+    });
+
+    nav.addEventListener("mouseleave", function () {
+      links.forEach(function (a) { a.style.transform = "scale(1)"; });
+    });
+  }
+  document.querySelectorAll(".nav-links").forEach(initMagneticNav);
+
   /* ---------- Scroll reveal ---------- */
   var revealEls = document.querySelectorAll(".reveal");
   if ("IntersectionObserver" in window) {

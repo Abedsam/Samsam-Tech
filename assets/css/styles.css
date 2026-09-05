@@ -257,16 +257,24 @@ h2.section-heading {
 .nav-links {
   display: flex;
   align-items: center;
-  column-gap: 24px;
+  column-gap: 6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .nav-links a {
+  display: inline-block;
+  padding: 6px 12px;
   font-size: 12px;
   font-weight: 400;
   text-transform: uppercase;
   letter-spacing: 0.12em;
   color: var(--color-silver-mist);
-  transition: color 0.2s ease;
+  transform-origin: center bottom;
+  transition: color 0.2s ease, transform 0.15s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
 }
 
 .nav-links a:hover,
