@@ -390,6 +390,18 @@ h2.section-heading {
   will-change: transform, opacity;
 }
 
+@media (min-width: 900px) {
+  .hero-globe {
+    left: 74%;
+    width: 560px;
+    max-width: 46vw;
+  }
+
+  .hero-content {
+    max-width: 540px;
+  }
+}
+
 .hero-globe__glow {
   position: absolute;
   inset: -12%;
