@@ -1368,23 +1368,48 @@ h2.section-heading {
   to { opacity: 1; transform: translate(-50%, -50%) scale(1.08); }
 }
 
-.projects-panel-ghost {
+.projects-panel-ghost-wrap {
   position: absolute;
   left: 50%;
   bottom: -8%;
   transform: translateX(-50%);
+  display: inline-block;
+  z-index: 0;
+  pointer-events: none;
+  user-select: none;
+}
+
+.projects-panel-ghost,
+.projects-panel-ghost-spot {
+  display: block;
   font-size: clamp(3rem, 13vw, 9rem);
   font-weight: 800;
   letter-spacing: -0.03em;
   line-height: 1;
   white-space: nowrap;
   color: transparent;
+}
+
+.projects-panel-ghost {
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0) 70%);
   -webkit-background-clip: text;
   background-clip: text;
-  z-index: 0;
-  pointer-events: none;
-  user-select: none;
+}
+
+.projects-panel-ghost-spot {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, #ffffff, var(--color-lavender-phosphor) 55%, var(--color-liquid-mist));
+  -webkit-background-clip: text;
+  background-clip: text;
+  opacity: 0;
+  -webkit-mask-image: radial-gradient(circle 160px at var(--spot-x, 50%) var(--spot-y, 50%), #000 0%, transparent 70%);
+  mask-image: radial-gradient(circle 160px at var(--spot-x, 50%) var(--spot-y, 50%), #000 0%, transparent 70%);
+  transition: opacity 0.35s ease;
+}
+
+.projects-panel-ghost-wrap.is-active .projects-panel-ghost-spot {
+  opacity: 1;
 }
 
 .projects-panel-marquee {
@@ -1438,7 +1463,7 @@ h2.section-heading {
 
 @media (max-width: 720px) {
   .projects-panel-marquee { display: none; }
-  .projects-panel-ghost { display: none; }
+  .projects-panel-ghost-wrap { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {

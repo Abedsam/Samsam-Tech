@@ -173,6 +173,30 @@
   }
   document.querySelectorAll(".projects-panel .btn-primary").forEach(initMagneticButton);
 
+  /* ---------- Mouse-spotlight reveal on the ghost wordmark ---------- */
+  function initGhostSpotlight(wrap) {
+    var panel = wrap.closest(".projects-panel");
+    var spot = wrap.querySelector(".projects-panel-ghost-spot");
+    if (!panel || !spot) return;
+    var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduceMotion) return;
+
+    panel.addEventListener("mousemove", function (e) {
+      var rect = wrap.getBoundingClientRect();
+      var inside = e.clientX >= rect.left && e.clientX <= rect.right &&
+        e.clientY >= rect.top && e.clientY <= rect.bottom;
+      wrap.classList.toggle("is-active", inside);
+      if (inside) {
+        spot.style.setProperty("--spot-x", (e.clientX - rect.left) + "px");
+        spot.style.setProperty("--spot-y", (e.clientY - rect.top) + "px");
+      }
+    });
+    panel.addEventListener("mouseleave", function () {
+      wrap.classList.remove("is-active");
+    });
+  }
+  document.querySelectorAll(".projects-panel-ghost-wrap").forEach(initGhostSpotlight);
+
   /* ---------- Scroll reveal ---------- */
   var revealEls = document.querySelectorAll(".reveal");
   if ("IntersectionObserver" in window) {
