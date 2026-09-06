@@ -1051,14 +1051,39 @@ h2.section-heading {
   text-align: center;
 }
 
-.kinetic-text {
+.kinetic-text-wrap {
+  position: relative;
+  display: inline-block;
+}
+
+.kinetic-text,
+.kinetic-text-spot {
   font-size: clamp(3rem, 12vw, 9rem);
   font-weight: 500;
   line-height: 1.0;
   letter-spacing: -0.03em;
-  color: transparent;
-  -webkit-text-stroke: 1px rgba(237, 255, 254, 0.35);
   white-space: nowrap;
+  color: transparent;
+}
+
+.kinetic-text {
+  -webkit-text-stroke: 1px rgba(237, 255, 254, 0.35);
+}
+
+.kinetic-text-spot {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, #ffffff, var(--color-lavender-phosphor) 55%, var(--color-liquid-mist));
+  -webkit-background-clip: text;
+  background-clip: text;
+  opacity: 0;
+  -webkit-mask-image: radial-gradient(circle 160px at var(--spot-x, 50%) var(--spot-y, 50%), #000 0%, transparent 70%);
+  mask-image: radial-gradient(circle 160px at var(--spot-x, 50%) var(--spot-y, 50%), #000 0%, transparent 70%);
+  transition: opacity 0.35s ease;
+}
+
+.kinetic-text-wrap.is-active .kinetic-text-spot {
+  opacity: 1;
 }
 
 /* ---------- Project image-expansion slider ---------- */
