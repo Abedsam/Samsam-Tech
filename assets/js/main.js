@@ -175,139 +175,70 @@
     });
   }
 
-  /* ---------- Hero scroll-morph cards ---------- */
-  function initHeroMorph(suffix) {
-    var morphEl = document.getElementById("hero-morph" + suffix);
-    var track = document.getElementById("hero-morph-track" + suffix);
-    if (!morphEl || !track) return;
+  /* ---------- Hero scroll-zoom globe ---------- */
+  function initHeroGlobe(suffix) {
+    var globeEl = document.getElementById("hero-globe" + suffix);
+    if (!globeEl) return;
 
-    var heroEl = morphEl.closest(".hero");
+    var heroEl = globeEl.closest(".hero");
     var heroContent = document.getElementById("hero-content" + suffix);
-    var cards = Array.prototype.slice.call(track.children);
-    var count = cards.length;
-    if (!count) return;
+    var heroReveal = document.getElementById("hero-reveal" + suffix);
+    if (!heroEl) return;
 
     var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     var desktopQuery = window.matchMedia("(min-width: 900px)");
-    var radius = 200;
-    var restOpacity = 0.4;
-    var introContentOpacity = 0.15;
-    var introContentOffset = 40;
+    var zoomStrength = 2.4;
+    var raf = null;
 
-    function circlePosition(i) {
-      var angle = (i / count) * Math.PI * 2;
-      return { x: Math.cos(angle) * radius, y: Math.sin(angle) * radius };
-    }
-
-    function linePosition(i) {
-      var spacing = 64;
-      var totalWidth = (count - 1) * spacing;
-      return { x: i * spacing - totalWidth / 2, y: 0 };
-    }
-
-    function lerp(a, b, t) {
-      return a + (b - a) * t;
-    }
-
-    function setCardTransform(card, x, y, opacity, scale) {
-      card.style.transform = "translate(-50%, -50%) translate(" + x + "px, " + y + "px) scale(" + scale + ")";
-      card.style.opacity = opacity;
-    }
-
-    function resetHeroContent() {
-      if (!heroContent) return;
-      heroContent.style.opacity = "";
-      heroContent.style.transform = "";
-    }
-
-    var scatterPositions = cards.map(function () {
-      return { x: (Math.random() - 0.5) * 700, y: (Math.random() - 0.5) * 700 };
-    });
-
-    if (reduceMotion) {
-      cards.forEach(function (card, i) {
-        var c = circlePosition(i);
-        card.style.transition = "none";
-        setCardTransform(card, c.x, c.y, 1, 1);
-      });
-      resetHeroContent();
-      return;
-    }
-
-    cards.forEach(function (card, i) {
-      var s = scatterPositions[i];
-      setCardTransform(card, s.x, s.y, 0, 0.6);
-    });
-
-    if (heroContent && desktopQuery.matches) {
-      heroContent.style.opacity = introContentOpacity;
-      heroContent.style.transform = "translateY(" + introContentOffset + "px)";
-    }
-
-    setTimeout(function () {
-      cards.forEach(function (card, i) {
-        var c = circlePosition(i);
-        setCardTransform(card, c.x, c.y, restOpacity, 1);
-      });
-    }, 200);
-
-    /* Mouse parallax */
-    if (heroEl) {
-      heroEl.addEventListener("mousemove", function (e) {
-        var rect = heroEl.getBoundingClientRect();
-        var nx = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-        track.style.transform = "translateX(" + (nx * 20) + "px)";
-      });
-    }
-
-    /* After the intro settles, a shared scroll progress (over the tall .hero
-       wrapper, desktop only) both straightens the circle into a line and
-       reveals the headline that starts lower/dimmed. */
-    var scrollDriven = false;
-    var ticking = false;
-
-    function updateMorph() {
-      ticking = false;
-      if (!scrollDriven || !heroEl || !desktopQuery.matches) return;
-      var wrapRect = heroEl.getBoundingClientRect();
-      var total = wrapRect.height - window.innerHeight;
-      var progress = total > 0 ? -wrapRect.top / total : 0;
-      progress = Math.min(1, Math.max(0, progress));
-
-      cards.forEach(function (card, i) {
-        var c = circlePosition(i);
-        var l = linePosition(i);
-        var x = lerp(c.x, l.x, progress);
-        var y = lerp(c.y, l.y, progress);
-        var opacity = lerp(restOpacity, 1, progress);
-        setCardTransform(card, x, y, opacity, 1);
-      });
-
+    function resetStatic() {
+      globeEl.style.transform = "translate(-50%, -50%) scale(1)";
+      globeEl.style.opacity = "1";
       if (heroContent) {
-        heroContent.style.opacity = lerp(introContentOpacity, 1, progress);
-        heroContent.style.transform = "translateY(" + lerp(introContentOffset, 0, progress) + "px)";
+        heroContent.style.opacity = "";
+        heroContent.style.transform = "";
+      }
+      if (heroReveal) {
+        heroReveal.style.opacity = "0";
+        heroReveal.style.pointerEvents = "none";
       }
     }
 
-    setTimeout(function () {
-      scrollDriven = true;
-      cards.forEach(function (card) { card.style.transition = "none"; });
-      updateMorph();
-    }, 1300);
+    function apply() {
+      raf = null;
+      if (!desktopQuery.matches || reduceMotion) {
+        resetStatic();
+        return;
+      }
+      var rect = heroEl.getBoundingClientRect();
+      var total = rect.height - window.innerHeight;
+      var p = total > 0 ? Math.min(1, Math.max(0, -rect.top / total)) : 0;
+      var ease = p * p * (3 - 2 * p);
 
-    window.addEventListener("scroll", function () {
-      if (!ticking) {
-        ticking = true;
-        requestAnimationFrame(updateMorph);
+      globeEl.style.transform = "translate(-50%, -50%) scale(" + (1 + (zoomStrength - 1) * ease) + ")";
+      globeEl.style.opacity = String(1 - 0.35 * Math.max(0, (p - 0.7) / 0.3));
+
+      var fade = Math.max(0, 1 - p / 0.45);
+      if (heroContent) {
+        heroContent.style.opacity = String(fade);
+        heroContent.style.transform = "translateY(" + (-24 * (1 - fade)) + "px)";
       }
-    }, { passive: true });
-    window.addEventListener("resize", function () {
-      if (desktopQuery.matches) {
-        if (scrollDriven) updateMorph();
-      } else {
-        resetHeroContent();
+
+      if (heroReveal) {
+        var r = Math.min(1, Math.max(0, (p - 0.55) / 0.35));
+        heroReveal.style.opacity = String(r);
+        heroReveal.style.transform = "translateY(" + (28 * (1 - r)) + "px)";
+        heroReveal.style.pointerEvents = r > 0.6 ? "auto" : "none";
       }
-    });
+    }
+
+    function onScroll() {
+      if (raf) return;
+      raf = requestAnimationFrame(apply);
+    }
+
+    apply();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
   }
 
   /* ---------- Circular scroll showcase (Home, desktop) ---------- */
@@ -602,7 +533,7 @@
   /* ---------- Init: real site uses "", the combined preview also inits the "-en" copies ---------- */
   ["", "-en"].forEach(function (suffix) {
     initContactForm(suffix);
-    initHeroMorph(suffix);
+    initHeroGlobe(suffix);
     initCircularShowcase(suffix);
     initElasticProcess(suffix);
     initStickyStack(suffix);
