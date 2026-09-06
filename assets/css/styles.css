@@ -423,7 +423,8 @@ h2.section-heading {
   position: relative;
   display: block;
   width: 100%;
-  height: auto;
+  aspect-ratio: 1;
+  object-fit: cover;
   mix-blend-mode: screen;
   -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 44%, transparent 60%);
   mask-image: radial-gradient(circle at 50% 50%, #000 44%, transparent 60%);
