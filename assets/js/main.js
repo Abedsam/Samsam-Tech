@@ -6,6 +6,96 @@
     el.textContent = new Date().getFullYear();
   });
 
+  /* ---------- Hero headline typewriter ---------- */
+  function initTypewriter(suffix) {
+    var el = document.getElementById("hero-title" + suffix);
+    if (!el) return;
+
+    var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var originalNodes = Array.prototype.slice.call(el.childNodes);
+    el.textContent = "";
+
+    // Flatten into plain data first (no DOM writes yet) so containers like the
+    // block-level accent span are only created once typing actually reaches
+    // them - creating it upfront (even empty) would force a line break early.
+    var tasks = [];
+    originalNodes.forEach(function (node, i) {
+      if (node.nodeType === Node.TEXT_NODE) {
+        var text = node.textContent.replace(/\s+/g, " ");
+        if (i === 0) text = text.replace(/^\s+/, "");
+        if (text.trim()) tasks.push({ text: text });
+      } else if (node.tagName === "BR") {
+        tasks.push({ br: true });
+      } else {
+        var text2 = node.textContent.replace(/\s+/g, " ").trim();
+        if (text2) tasks.push({ text: text2, tagName: node.tagName, className: node.className });
+      }
+    });
+
+    if (reduceMotion) {
+      var container = el;
+      tasks.forEach(function (task) {
+        if (task.br) {
+          container.appendChild(document.createElement("br"));
+        } else if (task.tagName) {
+          var clone = document.createElement(task.tagName);
+          clone.className = task.className;
+          clone.textContent = task.text;
+          el.appendChild(clone);
+        } else {
+          container.appendChild(document.createTextNode(task.text));
+        }
+      });
+      return;
+    }
+
+    var caret = document.createElement("span");
+    caret.className = "typewriter-caret";
+    caret.setAttribute("aria-hidden", "true");
+    el.appendChild(caret);
+
+    var activeContainer = el;
+    var ti = 0;
+    var ci = 0;
+
+    function step() {
+      var task = tasks[ti];
+      if (!task) {
+        setTimeout(function () {
+          caret.style.opacity = "0";
+          setTimeout(function () { caret.remove(); }, 400);
+        }, 1200);
+        return;
+      }
+      if (task.br) {
+        activeContainer.insertBefore(document.createElement("br"), caret);
+        ti++;
+        ci = 0;
+        step();
+        return;
+      }
+      if (task.tagName && ci === 0) {
+        var clone = document.createElement(task.tagName);
+        clone.className = task.className;
+        activeContainer.insertBefore(clone, caret);
+        activeContainer = clone;
+        clone.appendChild(caret);
+      }
+      activeContainer.insertBefore(document.createTextNode(task.text[ci]), caret);
+      ci++;
+      if (ci >= task.text.length) {
+        ti++;
+        ci = 0;
+        if (task.tagName) {
+          activeContainer = el;
+          el.appendChild(caret);
+        }
+      }
+      setTimeout(step, 55);
+    }
+    step();
+  }
+
   /* ---------- Sticky header shadow-free tint on scroll ---------- */
   var header = document.getElementById("site-header");
   if (header) {
@@ -552,6 +642,7 @@
   ["", "-en"].forEach(function (suffix) {
     initContactForm(suffix);
     initHeroGlobe(suffix);
+    initTypewriter(suffix);
     initCircularShowcase(suffix);
     initElasticProcess(suffix);
     initStickyStack(suffix);
