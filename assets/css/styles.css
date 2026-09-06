@@ -1290,6 +1290,8 @@ h2.section-heading {
 
 /* ---------- Projekte ---------- */
 .projects-panel {
+  position: relative;
+  overflow: hidden;
   background: var(--color-liquid-deep);
   border-radius: var(--radius-card);
   padding: var(--space-120) var(--space-48);
@@ -1311,6 +1313,104 @@ h2.section-heading {
 
 @media (max-width: 720px) {
   .projects-panel { padding: var(--space-64) var(--space-24); }
+}
+
+/* Cinematic decoration: ambient glow, ghost wordmark, marquee ribbon */
+.projects-panel-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 70%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(0, 130, 124, 0.35) 0%, rgba(253, 233, 255, 0.1) 45%, transparent 70%);
+  filter: blur(60px);
+  z-index: 0;
+  pointer-events: none;
+  animation: projectsPanelBreathe 8s ease-in-out infinite alternate;
+}
+
+@keyframes projectsPanelBreathe {
+  from { opacity: 0.55; transform: translate(-50%, -50%) scale(1); }
+  to { opacity: 1; transform: translate(-50%, -50%) scale(1.08); }
+}
+
+.projects-panel-ghost {
+  position: absolute;
+  left: 50%;
+  bottom: -8%;
+  transform: translateX(-50%);
+  font-size: clamp(3rem, 13vw, 9rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  white-space: nowrap;
+  color: transparent;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0) 70%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  z-index: 0;
+  pointer-events: none;
+  user-select: none;
+}
+
+.projects-panel-marquee {
+  position: absolute;
+  top: var(--space-32);
+  left: -5%;
+  right: -5%;
+  overflow: hidden;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: var(--space-12) 0;
+  background: rgba(1, 29, 28, 0.5);
+  transform: rotate(-1.5deg);
+  z-index: 1;
+}
+
+.projects-panel-marquee-track {
+  display: flex;
+  width: max-content;
+  align-items: center;
+  gap: var(--space-24);
+  white-space: nowrap;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--color-silver-mist);
+  animation: projectsPanelMarquee 32s linear infinite;
+}
+
+.projects-panel-marquee-track .dot { color: rgba(203, 255, 252, 0.6); }
+
+@keyframes projectsPanelMarquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.projects-panel-content {
+  position: relative;
+  z-index: 2;
+}
+
+.projects-panel .btn-primary {
+  box-shadow: 0 16px 40px -14px rgba(0, 130, 124, 0.55);
+  transition: transform 0.2s ease, opacity 0.2s ease, box-shadow 0.3s ease;
+}
+
+.projects-panel .btn-primary:hover {
+  box-shadow: 0 20px 48px -12px rgba(0, 130, 124, 0.7);
+}
+
+@media (max-width: 720px) {
+  .projects-panel-marquee { display: none; }
+  .projects-panel-ghost { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .projects-panel-glow,
+  .projects-panel-marquee-track { animation: none; }
 }
 
 /* ---------- About / Values ---------- */

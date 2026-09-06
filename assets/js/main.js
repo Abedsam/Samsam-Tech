@@ -65,6 +65,24 @@
   }
   document.querySelectorAll(".nav-links").forEach(initMagneticNav);
 
+  /* ---------- Magnetic pull on the closing-CTA button ---------- */
+  function initMagneticButton(btn) {
+    var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduceMotion) return;
+
+    btn.addEventListener("mousemove", function (e) {
+      var rect = btn.getBoundingClientRect();
+      var x = e.clientX - rect.left - rect.width / 2;
+      var y = e.clientY - rect.top - rect.height / 2;
+      btn.style.transform = "translate(" + (x * 0.3).toFixed(1) + "px, " + (y * 0.3).toFixed(1) + "px)";
+    });
+
+    btn.addEventListener("mouseleave", function () {
+      btn.style.transform = "";
+    });
+  }
+  document.querySelectorAll(".projects-panel .btn-primary").forEach(initMagneticButton);
+
   /* ---------- Scroll reveal ---------- */
   var revealEls = document.querySelectorAll(".reveal");
   if ("IntersectionObserver" in window) {
