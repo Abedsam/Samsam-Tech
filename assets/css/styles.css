@@ -940,27 +940,13 @@ h2.section-heading {
   filter: brightness(1);
 }
 
-.elastic-panel-bg {
+.elastic-panel-photo {
   position: absolute;
   inset: 0;
-  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
-
-.elastic-panel-bg span {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(40px);
-  opacity: 0.55;
-}
-
-.elastic-panel:nth-child(1) .elastic-panel-bg span:nth-child(1) { width: 260px; height: 260px; background: #00827c; top: -60px; left: -60px; }
-.elastic-panel:nth-child(1) .elastic-panel-bg span:nth-child(2) { width: 220px; height: 220px; background: #cbfffc; bottom: -80px; right: -40px; opacity: 0.25; }
-
-.elastic-panel:nth-child(2) .elastic-panel-bg span:nth-child(1) { width: 280px; height: 280px; background: #fde9ff; top: -80px; right: -60px; opacity: 0.3; }
-.elastic-panel:nth-child(2) .elastic-panel-bg span:nth-child(2) { width: 240px; height: 240px; background: #00827c; bottom: -70px; left: -50px; }
-
-.elastic-panel:nth-child(3) .elastic-panel-bg span:nth-child(1) { width: 260px; height: 260px; background: #cbfffc; top: 40%; left: -80px; opacity: 0.3; }
-.elastic-panel:nth-child(3) .elastic-panel-bg span:nth-child(2) { width: 220px; height: 220px; background: #fde9ff; bottom: -60px; right: -60px; opacity: 0.25; }
 
 .elastic-panel-overlay {
   position: absolute;
