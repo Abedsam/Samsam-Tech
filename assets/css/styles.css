@@ -175,8 +175,8 @@ h2.section-heading {
 .btn:hover { transform: translateY(-1px); opacity: 0.92; }
 
 .btn-primary {
-  background: var(--gradient-aurora);
-  color: #222222;
+  background: var(--gradient-bio);
+  color: var(--color-platinum);
   font-weight: 600;
 }
 
