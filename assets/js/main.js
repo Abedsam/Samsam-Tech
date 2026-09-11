@@ -101,9 +101,9 @@
   if (header) {
     var onScrollHeader = function () {
       if (window.scrollY > 12) {
-        header.style.background = "rgba(1, 38, 36, 0.92)";
+        header.style.background = "rgba(255, 255, 255, 0.96)";
       } else {
-        header.style.background = "rgba(1, 38, 36, 0.72)";
+        header.style.background = "rgba(255, 255, 255, 0.85)";
       }
     };
     window.addEventListener("scroll", onScrollHeader, { passive: true });

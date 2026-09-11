@@ -216,12 +216,35 @@ h2.section-heading {
   height: 80px;
   display: flex;
   align-items: center;
-  background: rgba(4, 22, 46, 0.72);
+  background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(4, 22, 46, 0.08);
   transition: background 0.3s ease;
 }
+
+.site-header .brand { color: var(--color-liquid-abyss); }
+
+.site-header .logo-badge { border: 1px solid rgba(4, 22, 46, 0.08); }
+
+.site-header .nav-links {
+  background: rgba(4, 22, 46, 0.04);
+  border-color: rgba(4, 22, 46, 0.1);
+}
+
+.site-header .nav-links a { color: var(--color-slate-deep); }
+
+.site-header .nav-links a:hover,
+.site-header .nav-links a.active { color: var(--color-liquid-abyss); }
+
+.site-header .lang-toggle {
+  color: var(--color-slate-deep);
+  border-color: rgba(4, 22, 46, 0.15);
+}
+
+.site-header .lang-toggle:hover { color: var(--color-liquid-abyss); }
+
+.site-header .nav-toggle { color: var(--color-liquid-abyss); }
 
 .site-header .container {
   display: flex;
