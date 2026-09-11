@@ -234,8 +234,14 @@ h2.section-heading {
 
 .site-header .nav-links a { color: var(--color-slate-deep); }
 
-.site-header .nav-links a:hover,
-.site-header .nav-links a.active { color: var(--color-liquid-abyss); }
+.site-header .nav-links a:hover { color: var(--color-liquid-abyss); }
+
+.site-header .nav-links a.active {
+  color: var(--color-liquid-abyss);
+  background: var(--color-platinum);
+  border-radius: 999px;
+  box-shadow: 0 1px 3px rgba(4, 22, 46, 0.1), 0 0 0 1px rgba(4, 22, 46, 0.06);
+}
 
 .site-header .lang-toggle {
   color: var(--color-slate-deep);
