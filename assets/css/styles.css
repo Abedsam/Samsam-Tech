@@ -1251,6 +1251,31 @@ h2.section-heading {
   letter-spacing: 0.04em;
 }
 
+.project-card-cta--start {
+  padding: 12px 22px;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: normal;
+  border-radius: 999px;
+}
+
+.project-card-start-icon {
+  position: absolute;
+  top: 42%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(60%, 340px);
+  height: auto;
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 55%, transparent 85%);
+  mask-image: radial-gradient(circle at 50% 50%, #000 55%, transparent 85%);
+  pointer-events: none;
+}
+
+@media (max-width: 640px) {
+  .project-card-start-icon { width: min(50%, 220px); }
+}
+
 .project-slider-nav {
   display: flex;
   align-items: center;
