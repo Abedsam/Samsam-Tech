@@ -162,9 +162,6 @@
   document.querySelectorAll(".projects-panel-ghost-wrap").forEach(function (wrap) {
     bindSpotlight(wrap, wrap.querySelector(".projects-panel-ghost-spot"), wrap.closest(".projects-panel"));
   });
-  document.querySelectorAll(".kinetic-text-wrap").forEach(function (wrap) {
-    bindSpotlight(wrap, wrap.querySelector(".kinetic-text-spot"), wrap.closest(".kinetic-wrap"));
-  });
 
   /* ---------- Scroll reveal ---------- */
   var revealEls = document.querySelectorAll(".reveal");

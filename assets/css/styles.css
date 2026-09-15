@@ -1134,46 +1134,12 @@ h2.section-heading {
   transform: translateX(-50%) scale(0.6);
 }
 
-/* ---------- Kinetic text divider ---------- */
-.kinetic-wrap {
+/* ---------- Platform marquee (in-flow section) ---------- */
+.platform-marquee-section {
   overflow: hidden;
   padding: var(--space-40) 0;
-  text-align: center;
-}
-
-.kinetic-text-wrap {
-  position: relative;
-  display: inline-block;
-}
-
-.kinetic-text,
-.kinetic-text-spot {
-  font-size: clamp(3rem, 12vw, 9rem);
-  font-weight: 500;
-  line-height: 1.0;
-  letter-spacing: -0.03em;
-  white-space: nowrap;
-  color: transparent;
-}
-
-.kinetic-text {
-  -webkit-text-stroke: 1px rgba(234, 246, 255, 0.35);
-}
-
-.kinetic-text-spot {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, #ffffff, var(--color-lavender-phosphor) 55%, var(--color-liquid-mist));
-  -webkit-background-clip: text;
-  background-clip: text;
-  opacity: 0;
-  -webkit-mask-image: radial-gradient(circle 160px at var(--spot-x, 50%) var(--spot-y, 50%), #000 0%, transparent 70%);
-  mask-image: radial-gradient(circle 160px at var(--spot-x, 50%) var(--spot-y, 50%), #000 0%, transparent 70%);
-  transition: opacity 0.35s ease;
-}
-
-.kinetic-text-wrap.is-active .kinetic-text-spot {
-  opacity: 1;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
 }
 
 /* ---------- Project image-expansion slider ---------- */
