@@ -48,6 +48,20 @@
     }
   }
 
+  /* ---------- Platform marquee (infinite scrolling chip strip) ---------- */
+  function initPlatformMarquee() {
+    document.querySelectorAll(".platform-marquee__track").forEach(function (track) {
+      if (track.dataset.cloned) return;
+      var clone = track.cloneNode(true);
+      clone.removeAttribute("id");
+      Array.prototype.slice.call(clone.children).forEach(function (chip) {
+        chip.setAttribute("aria-hidden", "true");
+        track.appendChild(chip);
+      });
+      track.dataset.cloned = "true";
+    });
+  }
+
   /* ---------- Sticky header shadow-free tint on scroll ---------- */
   var header = document.getElementById("site-header");
   if (header) {
@@ -628,5 +642,6 @@
     initProjectSlider(suffix);
     initFaq(suffix);
   });
+  initPlatformMarquee();
 
 })();

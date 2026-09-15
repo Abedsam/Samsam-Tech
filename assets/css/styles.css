@@ -611,6 +611,61 @@ h2.section-heading {
   .scroll-cue { display: none; }
 }
 
+.platform-marquee {
+  width: min(640px, 90vw);
+  overflow: hidden;
+  pointer-events: auto;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+}
+
+.platform-marquee__track {
+  display: flex;
+  width: max-content;
+  gap: var(--space-12, 12px);
+  animation: platformMarquee 24s linear infinite;
+}
+
+.platform-marquee:hover .platform-marquee__track {
+  animation-play-state: paused;
+}
+
+@keyframes platformMarquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.platform-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+  padding: 9px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(6px);
+  color: var(--color-silver-mist);
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.platform-chip svg {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  color: var(--color-lavender-phosphor);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .platform-marquee__track { animation: none; }
+}
+
+@media (max-width: 640px) {
+  .platform-chip { padding: 7px 12px; font-size: 12px; }
+}
+
 /* ---------- Page banner (interior pages) ---------- */
 .page-hero {
   position: relative;
