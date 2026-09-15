@@ -306,9 +306,16 @@
         headers: { "Content-Type": "application/json", "Accept": "application/json" },
         body: JSON.stringify(payload)
       })
-        .then(function (res) { return res.json(); })
-        .then(function (data) {
-          if (!data.success) throw new Error(data.message || "submit failed");
+        .then(function (res) {
+          return res.json().then(function (data) {
+            return { status: res.status, data: data };
+          });
+        })
+        .then(function (result) {
+          if (!result.data.success) {
+            console.error("Web3Forms submit failed:", result.status, result.data);
+            throw new Error(result.data.message || "submit failed");
+          }
           form.reset();
           if (formNote) {
             formNote.textContent = isEnglish
@@ -316,7 +323,8 @@
               : "Danke! Ihre Anfrage wurde an Samsam-Tech gesendet. Wir melden uns innerhalb von 48 Stunden.";
           }
         })
-        .catch(function () {
+        .catch(function (err) {
+          console.error("Contact form: falling back to mailto because:", err);
           // Falls back to the visitor's own mail client (e.g. access key not
           // yet configured, or the Web3Forms request fails for any reason)
           // so the form never just silently does nothing.
