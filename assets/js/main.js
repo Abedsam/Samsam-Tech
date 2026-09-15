@@ -52,12 +52,29 @@
   function initPlatformMarquee() {
     document.querySelectorAll(".platform-marquee__track").forEach(function (track) {
       if (track.dataset.cloned) return;
-      var clone = track.cloneNode(true);
-      clone.removeAttribute("id");
-      Array.prototype.slice.call(clone.children).forEach(function (chip) {
-        chip.setAttribute("aria-hidden", "true");
-        track.appendChild(chip);
-      });
+      var originalChips = Array.prototype.slice.call(track.children);
+      var singleSetWidth = track.scrollWidth;
+      var viewportWidth = window.innerWidth || document.documentElement.clientWidth;
+
+      // Duplicate enough full sets so the track is always at least ~2.5x the
+      // viewport width - otherwise on wide screens the second (last) copy
+      // scrolls past before the loop restarts, leaving a blank gap. The
+      // translateX(-50%) loop stays seamless for any *even* copy count,
+      // since shifting by an integer number of set-widths is invisible.
+      var copies = singleSetWidth > 0 ? Math.ceil((viewportWidth * 2.5) / singleSetWidth) : 2;
+      copies = Math.max(2, copies);
+      if (copies % 2 !== 0) copies++;
+
+      for (var i = 1; i < copies; i++) {
+        originalChips.forEach(function (chip) {
+          var clone = chip.cloneNode(true);
+          clone.setAttribute("aria-hidden", "true");
+          track.appendChild(clone);
+        });
+      }
+
+      // Keep scroll speed constant regardless of copy count (base: 24s per set).
+      track.style.animationDuration = (24 * (copies / 2)) + "s";
       track.dataset.cloned = "true";
     });
   }
