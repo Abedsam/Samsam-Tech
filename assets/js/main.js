@@ -49,36 +49,55 @@
   }
 
   /* ---------- Platform marquee (infinite scrolling chip strip) ---------- */
+  function buildPlatformMarquee(track) {
+    if (track.dataset.cloned) return;
+    var originalChips = Array.prototype.slice.call(track.children);
+    var singleSetWidth = track.scrollWidth;
+    var gapPx = parseFloat(getComputedStyle(track).columnGap) || 0;
+    // The exact distance one full chip-set (plus the gap that follows it)
+    // occupies. Shifting the track by precisely this amount - instead of
+    // a "-50%" guess - guarantees the wrap point lines up pixel-for-pixel
+    // with no blank gap or jump, however many copies get appended below.
+    var period = singleSetWidth + gapPx;
+    var viewportWidth = window.innerWidth || document.documentElement.clientWidth;
+
+    // Keep duplicating full sets until the track comfortably outlasts one
+    // shift-by-a-period animation cycle on the widest realistic screen -
+    // otherwise the last copy scrolls past before the loop restarts.
+    var copies = Math.max(2, Math.ceil((viewportWidth * 2.5) / period) + 1);
+    for (var i = 1; i < copies; i++) {
+      originalChips.forEach(function (chip) {
+        var clone = chip.cloneNode(true);
+        clone.setAttribute("aria-hidden", "true");
+        track.appendChild(clone);
+      });
+    }
+
+    var speed = 55; // px per second, constant regardless of copy count
+    track.style.setProperty("--marquee-shift", period + "px");
+    track.style.animationDuration = (period / speed) + "s";
+    track.dataset.cloned = "true";
+  }
+
   function initPlatformMarquee() {
-    document.querySelectorAll(".platform-marquee__track").forEach(function (track) {
-      if (track.dataset.cloned) return;
-      var originalChips = Array.prototype.slice.call(track.children);
-      var singleSetWidth = track.scrollWidth;
-      var gapPx = parseFloat(getComputedStyle(track).columnGap) || 0;
-      // The exact distance one full chip-set (plus the gap that follows it)
-      // occupies. Shifting the track by precisely this amount - instead of
-      // a "-50%" guess - guarantees the wrap point lines up pixel-for-pixel
-      // with no blank gap or jump, however many copies get appended below.
-      var period = singleSetWidth + gapPx;
-      var viewportWidth = window.innerWidth || document.documentElement.clientWidth;
+    var tracks = document.querySelectorAll(".platform-marquee__track");
+    if (!tracks.length) return;
 
-      // Keep duplicating full sets until the track comfortably outlasts one
-      // shift-by-a-period animation cycle on the widest realistic screen -
-      // otherwise the last copy scrolls past before the loop restarts.
-      var copies = Math.max(2, Math.ceil((viewportWidth * 2.5) / period) + 1);
-      for (var i = 1; i < copies; i++) {
-        originalChips.forEach(function (chip) {
-          var clone = chip.cloneNode(true);
-          clone.setAttribute("aria-hidden", "true");
-          track.appendChild(clone);
-        });
-      }
-
-      var speed = 55; // px per second, constant regardless of copy count
-      track.style.setProperty("--marquee-shift", period + "px");
-      track.style.animationDuration = (period / speed) + "s";
-      track.dataset.cloned = "true";
-    });
+    // The chip labels render in a fallback font until Google's Inter
+    // (loaded with display=swap) finishes downloading. Measuring widths
+    // before that swap locks in a --marquee-shift distance that no longer
+    // matches the real (reflowed) content once the font swaps in mid-loop -
+    // the animation keeps using the stale distance, so the wrap point no
+    // longer lines up and the strip visibly stutters/jumps. Waiting for
+    // document.fonts.ready avoids measuring on the wrong font.
+    var build = function () {
+      tracks.forEach(buildPlatformMarquee);
+    };
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(build).catch(build);
+    } else {
+      build();
+    }
   }
 
   /* ---------- Sticky header shadow-free tint on scroll ---------- */
