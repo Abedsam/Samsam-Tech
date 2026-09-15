@@ -611,20 +611,6 @@ h2.section-heading {
   .scroll-cue { display: none; }
 }
 
-.platform-marquee {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 76px;
-  z-index: 3;
-  width: 100%;
-  overflow: hidden;
-  opacity: 0;
-  pointer-events: none;
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
-  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
-}
-
 .platform-marquee__track {
   display: flex;
   width: max-content;
@@ -632,7 +618,7 @@ h2.section-heading {
   animation: platformMarquee 24s linear infinite;
 }
 
-.platform-marquee:hover .platform-marquee__track {
+.platform-marquee-section:hover .platform-marquee__track {
   animation-play-state: paused;
 }
 
