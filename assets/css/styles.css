@@ -1933,12 +1933,12 @@ h2.section-heading {
 /* ---------- Footer ---------- */
 .site-footer {
   background: var(--color-liquid-abyss);
-  padding-top: var(--space-40);
+  padding: var(--space-40) var(--space-40) 0;
 }
 
 .footer-card {
   position: relative;
-  max-width: var(--page-max-width);
+  max-width: 1800px;
   margin: 0 auto;
   background: var(--color-liquid-deep);
   border-top: 1px solid rgba(255, 255, 255, 0.08);
@@ -2055,6 +2055,7 @@ h2.section-heading {
 @media (max-width: 640px) {
   .footer-links-grid { grid-template-columns: repeat(2, 1fr); gap: var(--space-32) var(--space-20); }
   .footer-card { padding: var(--space-48) var(--space-24) var(--space-32); border-radius: 24px 24px 0 0; }
+  .site-footer { padding: var(--space-20) var(--space-20) 0; }
 }
 
 /* ---------- Legal content (Impressum) ---------- */
