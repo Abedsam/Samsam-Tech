@@ -174,6 +174,12 @@ h2.section-heading {
 
 .btn:hover { transform: translateY(-1px); opacity: 0.92; }
 
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
 .btn-primary {
   background: var(--gradient-bio);
   color: var(--color-platinum);

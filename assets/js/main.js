@@ -259,11 +259,15 @@
     statEls.forEach(function (el) { statIo.observe(el); });
   }
 
-  /* ---------- Contact form -> mailto ---------- */
+  /* ---------- Contact form -> Web3Forms backend ---------- */
+  var WEB3FORMS_ACCESS_KEY = "8f4a7e89-b8a7-4c5c-8b27-6c4ac8f3e1c7";
+
   function initContactForm(suffix) {
     var form = document.getElementById("contact-form" + suffix);
     var formNote = document.getElementById("form-note" + suffix);
     if (!form) return;
+
+    var submitBtn = form.querySelector("button[type=submit]");
 
     form.addEventListener("submit", function (e) {
       e.preventDefault();
@@ -277,37 +281,79 @@
 
       var isEnglish = document.documentElement.lang === "en" || suffix === "-en";
       var subject = (isEnglish ? "Inquiry via samsam-tech.de from " : "Anfrage über samsam-tech.de von ") + firstname + " " + lastname;
-      var bodyLines = isEnglish ? [
-        "First name: " + firstname,
-        "Last name: " + lastname,
-        "Company: " + (company || "-"),
-        "Email: " + email,
-        "Phone: " + (phone || "-"),
-        "",
-        "Message:",
-        message
-      ] : [
-        "Vorname: " + firstname,
-        "Nachname: " + lastname,
-        "Unternehmen: " + (company || "-"),
-        "E-Mail: " + email,
-        "Telefon: " + (phone || "-"),
-        "",
-        "Nachricht:",
-        message
-      ];
-      var body = bodyLines.join("\n");
 
-      var mailto =
-        "mailto:Info@samsam-tech.de" +
-        "?subject=" + encodeURIComponent(subject) +
-        "&body=" + encodeURIComponent(body);
+      var payload = {
+        access_key: WEB3FORMS_ACCESS_KEY,
+        subject: subject,
+        from_name: firstname + " " + lastname,
+        Vorname: firstname,
+        Nachname: lastname,
+        Unternehmen: company || "-",
+        "E-Mail": email,
+        Telefon: phone || "-",
+        Nachricht: message
+      };
 
-      window.location.href = mailto;
-
+      if (submitBtn) submitBtn.disabled = true;
       if (formNote) {
+        formNote.style.color = "";
+        formNote.textContent = isEnglish ? "Sending…" : "Wird gesendet…";
         formNote.style.display = "block";
       }
+
+      fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify(payload)
+      })
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          if (!data.success) throw new Error(data.message || "submit failed");
+          form.reset();
+          if (formNote) {
+            formNote.textContent = isEnglish
+              ? "Thank you! Your inquiry has been sent to Samsam-Tech. We'll get back to you within 48 hours."
+              : "Danke! Ihre Anfrage wurde an Samsam-Tech gesendet. Wir melden uns innerhalb von 48 Stunden.";
+          }
+        })
+        .catch(function () {
+          // Falls back to the visitor's own mail client (e.g. access key not
+          // yet configured, or the Web3Forms request fails for any reason)
+          // so the form never just silently does nothing.
+          var bodyLines = isEnglish ? [
+            "First name: " + firstname,
+            "Last name: " + lastname,
+            "Company: " + (company || "-"),
+            "Email: " + email,
+            "Phone: " + (phone || "-"),
+            "",
+            "Message:",
+            message
+          ] : [
+            "Vorname: " + firstname,
+            "Nachname: " + lastname,
+            "Unternehmen: " + (company || "-"),
+            "E-Mail: " + email,
+            "Telefon: " + (phone || "-"),
+            "",
+            "Nachricht:",
+            message
+          ];
+          window.location.href =
+            "mailto:Info@samsam-tech.de" +
+            "?subject=" + encodeURIComponent(subject) +
+            "&body=" + encodeURIComponent(bodyLines.join("\n"));
+
+          if (formNote) {
+            formNote.style.color = "";
+            formNote.textContent = isEnglish
+              ? "Opening your email program with your inquiry to Samsam-Tech…"
+              : "Ihr E-Mail-Programm öffnet sich mit Ihrer Anfrage an Samsam-Tech…";
+          }
+        })
+        .finally(function () {
+          if (submitBtn) submitBtn.disabled = false;
+        });
     });
   }
 
