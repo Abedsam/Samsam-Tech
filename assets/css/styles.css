@@ -650,6 +650,14 @@ h2.section-heading {
   color: var(--color-lavender-phosphor);
 }
 
+.platform-chip img {
+  height: 16px;
+  width: auto;
+  max-width: 62px;
+  flex: none;
+  display: block;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .platform-marquee__track { animation: none; }
 }
