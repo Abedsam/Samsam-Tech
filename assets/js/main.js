@@ -282,17 +282,20 @@
       var isEnglish = document.documentElement.lang === "en" || suffix === "-en";
       var subject = (isEnglish ? "Inquiry via samsam-tech.de from " : "Anfrage über samsam-tech.de von ") + firstname + " " + lastname;
 
-      var payload = {
-        access_key: WEB3FORMS_ACCESS_KEY,
-        subject: subject,
-        from_name: firstname + " " + lastname,
-        Vorname: firstname,
-        Nachname: lastname,
-        Unternehmen: company || "-",
-        "E-Mail": email,
-        Telefon: phone || "-",
-        Nachricht: message
-      };
+      // FormData (not JSON) so the request stays a CORS "simple request" -
+      // no preflight OPTIONS round-trip that some browsers/extensions
+      // (tracker/ad blockers) intermittently block. This is also the
+      // submission style Web3Forms' own docs use.
+      var formData = new FormData();
+      formData.append("access_key", WEB3FORMS_ACCESS_KEY);
+      formData.append("subject", subject);
+      formData.append("from_name", firstname + " " + lastname);
+      formData.append("Vorname", firstname);
+      formData.append("Nachname", lastname);
+      formData.append("Unternehmen", company || "-");
+      formData.append("E-Mail", email);
+      formData.append("Telefon", phone || "-");
+      formData.append("Nachricht", message);
 
       if (submitBtn) submitBtn.disabled = true;
       if (formNote) {
@@ -303,8 +306,8 @@
 
       fetch("https://api.web3forms.com/submit", {
         method: "POST",
-        headers: { "Content-Type": "application/json", "Accept": "application/json" },
-        body: JSON.stringify(payload)
+        headers: { "Accept": "application/json" },
+        body: formData
       })
         .then(function (res) {
           return res.json().then(function (data) {
