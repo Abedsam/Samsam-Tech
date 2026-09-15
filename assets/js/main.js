@@ -54,17 +54,18 @@
       if (track.dataset.cloned) return;
       var originalChips = Array.prototype.slice.call(track.children);
       var singleSetWidth = track.scrollWidth;
+      var gapPx = parseFloat(getComputedStyle(track).columnGap) || 0;
+      // The exact distance one full chip-set (plus the gap that follows it)
+      // occupies. Shifting the track by precisely this amount - instead of
+      // a "-50%" guess - guarantees the wrap point lines up pixel-for-pixel
+      // with no blank gap or jump, however many copies get appended below.
+      var period = singleSetWidth + gapPx;
       var viewportWidth = window.innerWidth || document.documentElement.clientWidth;
 
-      // Duplicate enough full sets so the track is always at least ~2.5x the
-      // viewport width - otherwise on wide screens the second (last) copy
-      // scrolls past before the loop restarts, leaving a blank gap. The
-      // translateX(-50%) loop stays seamless for any *even* copy count,
-      // since shifting by an integer number of set-widths is invisible.
-      var copies = singleSetWidth > 0 ? Math.ceil((viewportWidth * 2.5) / singleSetWidth) : 2;
-      copies = Math.max(2, copies);
-      if (copies % 2 !== 0) copies++;
-
+      // Keep duplicating full sets until the track comfortably outlasts one
+      // shift-by-a-period animation cycle on the widest realistic screen -
+      // otherwise the last copy scrolls past before the loop restarts.
+      var copies = Math.max(2, Math.ceil((viewportWidth * 2.5) / period) + 1);
       for (var i = 1; i < copies; i++) {
         originalChips.forEach(function (chip) {
           var clone = chip.cloneNode(true);
@@ -73,8 +74,9 @@
         });
       }
 
-      // Keep scroll speed constant regardless of copy count (base: 24s per set).
-      track.style.animationDuration = (24 * (copies / 2)) + "s";
+      var speed = 55; // px per second, constant regardless of copy count
+      track.style.setProperty("--marquee-shift", period + "px");
+      track.style.animationDuration = (period / speed) + "s";
       track.dataset.cloned = "true";
     });
   }
