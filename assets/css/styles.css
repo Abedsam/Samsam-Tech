@@ -1057,113 +1057,127 @@ h2.section-heading {
   .stats-grid { grid-template-columns: 1fr; gap: var(--space-40); }
 }
 
-/* ---------- Process (Wie arbeiten wir) — pinned cards ---------- */
-.how-it-works {
-  position: relative;
-  padding: var(--space-16) 0 var(--space-24);
-}
-
-.how-it-works::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0.05;
-  background-image: linear-gradient(rgba(255, 255, 255, 1) 1px, transparent 1px);
-  background-size: 100% 32px;
-  z-index: 0;
-}
-
-.how-it-works-connector {
-  position: absolute;
-  left: 10%;
-  right: 10%;
-  top: 130px;
-  height: 2px;
-  background-image: repeating-linear-gradient(90deg, rgba(90, 200, 250, 0.55) 0 10px, transparent 10px 18px);
-  animation: howItWorksDash 1.2s linear infinite;
-  z-index: 1;
-  display: none;
-}
-
-@keyframes howItWorksDash {
-  to { background-position-x: -18px; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .how-it-works-connector { animation: none; }
-}
-
-@media (min-width: 860px) {
-  .how-it-works-connector { display: block; }
-}
-
-.how-it-works-track {
-  position: relative;
-  z-index: 2;
+/* ---------- Process (Wie arbeiten wir) — elastic accordion ---------- */
+.elastic-process {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: flex-start;
-  gap: var(--space-32) var(--space-24);
+  flex-direction: column;
+  gap: var(--space-16);
+  height: 620px;
 }
 
-.how-it-works-card {
-  position: relative;
-  width: 100%;
-  max-width: 300px;
-  padding: var(--space-24);
-  border-radius: 20px;
-  background: var(--color-liquid-kelp);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 16px 32px rgba(3, 15, 34, 0.4);
-  transform: rotate(0deg);
-  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
-}
-
-@media (min-width: 860px) {
-  .how-it-works-card {
-    width: 280px;
-    margin-top: var(--lift, 0px);
-    transform: rotate(var(--rotate, 0deg));
+@media (min-width: 768px) {
+  .elastic-process {
+    flex-direction: row;
+    height: 460px;
   }
 }
 
-.how-it-works-card:hover {
-  transform: translateY(-6px) scale(1.04) rotate(0deg);
-  box-shadow: 0 24px 48px rgba(3, 15, 34, 0.55);
-  z-index: 5;
+.elastic-panel {
+  position: relative;
+  flex: 1 1 0;
+  overflow: hidden;
+  border-radius: var(--radius-card);
+  cursor: pointer;
+  background: var(--color-liquid-kelp);
+  filter: brightness(0.6);
+  transition: flex 0.7s cubic-bezier(0.25, 1, 0.5, 1), filter 0.5s ease;
 }
 
-.how-it-works-pin {
+.elastic-panel:hover { filter: brightness(0.8); }
+
+.elastic-panel.is-active {
+  flex: 4 1 0;
+  filter: brightness(1);
+}
+
+.elastic-panel-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.elastic-panel-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(3, 15, 34, 0.92) 0%, rgba(3, 15, 34, 0.35) 55%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.elastic-panel.is-active .elastic-panel-overlay { opacity: 1; }
+
+.elastic-panel-content {
+  position: absolute;
+  inset: 0;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: var(--space-28);
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.elastic-panel.is-active .elastic-panel-content {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.15s;
+}
+
+.elastic-panel-tag {
+  align-self: flex-start;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-liquid-mist);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 999px;
+  padding: 5px 12px;
   margin-bottom: var(--space-16);
-  color: var(--color-lavender-phosphor);
+  white-space: nowrap;
 }
 
-.how-it-works-pin svg { width: 22px; height: 22px; }
-
-.how-it-works-number {
-  display: block;
-  font-size: 2.1rem;
-  font-weight: 700;
-  color: var(--color-lavender-phosphor);
-  line-height: 1;
-  margin-bottom: var(--space-12);
-}
-
-.how-it-works-card h3 {
-  font-size: 1.25rem;
+.elastic-panel-content h3 {
+  font-size: clamp(1.2rem, 2.2vw, 1.7rem);
   color: var(--color-platinum);
-  margin-bottom: 8px;
-  line-height: 1.25;
+  margin-bottom: 10px;
+  line-height: 1.2;
 }
 
-.how-it-works-card p {
+.elastic-panel-content p {
+  color: var(--color-silver-mist);
   font-size: 14px;
   line-height: 1.55;
-  color: var(--color-silver-mist);
+  max-width: 360px;
+}
+
+.elastic-panel-label {
+  position: absolute;
+  left: 50%;
+  bottom: var(--space-24);
+  transform: translateX(-50%) scale(1);
+  opacity: 1;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--color-platinum);
+  white-space: nowrap;
+}
+
+@media (min-width: 768px) {
+  .elastic-panel-label {
+    writing-mode: vertical-rl;
+    font-size: 15px;
+  }
+}
+
+.elastic-panel.is-active .elastic-panel-label {
+  opacity: 0;
+  transform: translateX(-50%) scale(0.6);
 }
 
 /* ---------- Platform marquee (in-flow section) ---------- */

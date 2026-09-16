@@ -520,6 +520,24 @@
     }
   }
 
+  /* ---------- Elastic process accordion (Wie arbeiten wir) ---------- */
+  function initElasticProcess(suffix) {
+    var elasticProcess = document.getElementById("elastic-process" + suffix);
+    if (!elasticProcess) return;
+
+    var elasticPanels = Array.prototype.slice.call(elasticProcess.querySelectorAll(".elastic-panel"));
+    var setActivePanel = function (panel) {
+      elasticPanels.forEach(function (p) {
+        p.classList.toggle("is-active", p === panel);
+      });
+    };
+    elasticPanels.forEach(function (panel) {
+      panel.addEventListener("mouseenter", function () { setActivePanel(panel); });
+      panel.addEventListener("click", function () { setActivePanel(panel); });
+    });
+    setActivePanel(elasticPanels[1] || elasticPanels[0]);
+  }
+
   /* ---------- Sticky stacking service cards (Dienstleistungen) ---------- */
   function initStickyStack(suffix) {
     var stickyStack = document.getElementById("sticky-stack" + suffix);
@@ -726,6 +744,7 @@
     initContactForm(suffix);
     initScrollScrubHero(suffix);
     initCircularShowcase(suffix);
+    initElasticProcess(suffix);
     initStickyStack(suffix);
     initProjectSlider(suffix);
     initFaq(suffix);
