@@ -6,48 +6,6 @@
     el.textContent = new Date().getFullYear();
   });
 
-  /* ---------- Hero headline staggered word reveal ---------- */
-  function initHeroWordReveal(suffix) {
-    var el = document.getElementById("hero-title" + suffix);
-    if (!el) return;
-
-    var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    var originalNodes = Array.prototype.slice.call(el.childNodes);
-    el.textContent = "";
-
-    var index = 0;
-
-    originalNodes.forEach(function (node) {
-      if (node.nodeType === Node.TEXT_NODE) {
-        var text = node.textContent.replace(/\s+/g, " ");
-        var words = text.split(" ").filter(function (w) { return w.length; });
-        words.forEach(function (word, wi) {
-          var span = document.createElement("span");
-          span.className = "hero-word";
-          span.style.setProperty("--i", index++);
-          span.textContent = word;
-          el.appendChild(span);
-          el.appendChild(document.createTextNode(" "));
-        });
-      } else if (node.tagName === "BR") {
-        el.appendChild(document.createElement("br"));
-      } else {
-        var clone = node.cloneNode(true);
-        clone.classList.add("is-revealing");
-        clone.style.setProperty("--i", index++);
-        el.appendChild(clone);
-      }
-    });
-
-    if (reduceMotion) {
-      el.querySelectorAll(".hero-word, .is-revealing").forEach(function (span) {
-        span.style.animation = "none";
-        span.style.opacity = "1";
-        span.style.transform = "none";
-      });
-    }
-  }
-
   /* ---------- Platform marquee (infinite scrolling chip strip) ---------- */
   function buildPlatformMarquee(track) {
     if (track.dataset.cloned) return;
@@ -368,70 +326,113 @@
     });
   }
 
-  /* ---------- Hero scroll-zoom globe ---------- */
-  function initHeroGlobe(suffix) {
-    var globeEl = document.getElementById("hero-globe" + suffix);
-    if (!globeEl) return;
+  /* ---------- Hero scroll-scrub (locked-scroll intro sequence) ---------- */
+  function initScrollScrubHero(suffix) {
+    var section = document.getElementById("sst-hero" + suffix);
+    if (!section) return;
 
-    var heroEl = globeEl.closest(".hero");
-    var heroContent = document.getElementById("hero-content" + suffix);
-    var heroReveal = document.getElementById("hero-reveal" + suffix);
-    if (!heroEl) return;
+    var orb = document.getElementById("sst-orb" + suffix);
+    var panel = document.getElementById("sst-panel" + suffix);
+    var claim = document.getElementById("sst-claim" + suffix);
+    var hint = document.getElementById("sst-hint" + suffix);
+    var bar = document.getElementById("sst-bar" + suffix);
 
     var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    var desktopQuery = window.matchMedia("(min-width: 900px)");
-    var zoomStrength = 2.4;
-    var raf = null;
 
-    function resetStatic() {
-      globeEl.style.transform = "translate(-50%, -50%) scale(1)";
-      globeEl.style.opacity = "1";
-      if (heroContent) {
-        heroContent.style.opacity = "";
-        heroContent.style.transform = "";
-      }
-      if (heroReveal) {
-        heroReveal.style.opacity = "0";
-        heroReveal.style.pointerEvents = "none";
-      }
+    var PANEL_END = 0.34;
+    var MARK_START = 0.42;
+    var MARK_END = 0.82;
+    var SCRUB_DISTANCE = 2600;
+
+    function clamp(v, a, b) { return Math.min(b, Math.max(a, v)); }
+    function ease(t) { return t * t * (3 - 2 * t); }
+
+    var target = 0, cur = 0, vel = 0, last = 0, raf = 0;
+    var started = false, locked = false, lockY = 0, touchY = 0;
+
+    function engage() {
+      if (locked) return;
+      locked = true;
+      lockY = window.scrollY;
+      var b = document.body.style;
+      b.position = "fixed"; b.top = "-" + lockY + "px"; b.left = "0"; b.right = "0"; b.width = "100%";
+    }
+    function release() {
+      if (!locked) return;
+      locked = false;
+      var b = document.body.style;
+      b.position = ""; b.top = ""; b.left = ""; b.right = ""; b.width = "";
+      window.scrollTo(0, lockY);
     }
 
-    function apply() {
-      raf = null;
-      if (!desktopQuery.matches || reduceMotion) {
-        resetStatic();
-        return;
-      }
-      var rect = heroEl.getBoundingClientRect();
-      var total = rect.height - window.innerHeight;
-      var p = total > 0 ? Math.min(1, Math.max(0, -rect.top / total)) : 0;
-      var ease = p * p * (3 - 2 * p);
-
-      globeEl.style.transform = "translate(-50%, -50%) scale(" + (1 + (zoomStrength - 1) * ease) + ")";
-      globeEl.style.opacity = String(1 - 0.35 * Math.max(0, (p - 0.7) / 0.3));
-
-      var fade = Math.max(0, 1 - p / 0.45);
-      if (heroContent) {
-        heroContent.style.opacity = String(fade);
-        heroContent.style.transform = "translateY(" + (-24 * (1 - fade)) + "px)";
-      }
-
-      var r = Math.min(1, Math.max(0, (p - 0.55) / 0.35));
-      if (heroReveal) {
-        heroReveal.style.opacity = String(r);
-        heroReveal.style.transform = "translateY(" + (28 * (1 - r)) + "px)";
-        heroReveal.style.pointerEvents = r > 0.6 ? "auto" : "none";
-      }
+    function addDelta(dy) {
+      // clamp per-event delta so trackpad/mouse jumps don't snap the sequence
+      var step = (Math.sign(dy) * Math.min(Math.abs(dy), 90)) / SCRUB_DISTANCE;
+      target = clamp(target + step, 0, 1);
+      if (target > 0.001) started = true;
+      if (target >= 0.999) release();
+      else if (window.scrollY <= 0) engage();
     }
 
-    function onScroll() {
-      if (raf) return;
-      raf = requestAnimationFrame(apply);
+    function onWheel(e) {
+      if (locked || (window.scrollY <= 0 && e.deltaY < 0)) { addDelta(e.deltaY); e.preventDefault(); }
+    }
+    function onTouchStart(e) { touchY = e.touches[0] ? e.touches[0].clientY : 0; }
+    function onTouchMove(e) {
+      var y = e.touches[0] ? e.touches[0].clientY : touchY;
+      var dy = touchY - y;
+      touchY = y;
+      if (locked) { addDelta(dy); e.preventDefault(); }
+    }
+    function onKey(e) {
+      if (!locked) return;
+      var map = { ArrowDown: 120, PageDown: 600, ArrowUp: -120, PageUp: -600, " ": 400 };
+      if (map[e.key] !== undefined) { addDelta(map[e.key]); e.preventDefault(); }
     }
 
-    apply();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
+    if (!reduceMotion) {
+      engage();
+      window.addEventListener("wheel", onWheel, { passive: false });
+      window.addEventListener("touchstart", onTouchStart, { passive: true });
+      window.addEventListener("touchmove", onTouchMove, { passive: false });
+      window.addEventListener("keydown", onKey);
+    } else {
+      target = cur = 1;
+    }
+
+    function frame(now) {
+      var dt = last ? Math.min((now - last) / 1000, 0.05) : 1 / 60;
+      last = now;
+      var k = 34, d = 2 * Math.sqrt(34) * 1.02; // critically damped spring
+      vel += ((target - cur) * k - vel * d) * dt;
+      cur += vel * dt;
+      if (Math.abs(target - cur) < 0.0002 && Math.abs(vel) < 0.0005) { cur = target; vel = 0; }
+      var p = cur;
+
+      if (orb) {
+        orb.style.transform = "translate(" + (-p * 16) + "%, " + (p * 3) + "%) scale(" + (1 + p * 0.22) + ")";
+        orb.style.filter = "brightness(" + (1 + p * 0.28) + ") saturate(" + (1 + p * 0.2) + ")";
+      }
+      if (panel) {
+        var t1 = 1 - ease(clamp(p / PANEL_END, 0, 1));
+        panel.style.opacity = String(t1);
+        panel.style.transform = "translateY(" + ((1 - t1) * -28) + "px) scale(" + (0.97 + t1 * 0.03) + ")";
+        panel.style.filter = "blur(" + ((1 - t1) * 12) + "px)";
+        panel.style.pointerEvents = t1 < 0.4 ? "none" : "auto";
+      }
+      if (claim) {
+        var t2 = ease(clamp((p - MARK_START) / (MARK_END - MARK_START), 0, 1));
+        claim.style.opacity = String(t2);
+        claim.style.transform = "translateY(" + ((1 - t2) * 22) + "px) scale(" + (0.985 + t2 * 0.015) + ")";
+        claim.style.filter = "blur(" + ((1 - t2) * 7) + "px)";
+        claim.style.letterSpacing = ((1 - t2) * 0.12) + "em";
+      }
+      if (hint) hint.style.opacity = started ? "0" : "1";
+      if (bar) bar.style.transform = "scaleX(" + p + ")";
+
+      raf = requestAnimationFrame(frame);
+    }
+    raf = requestAnimationFrame(frame);
   }
 
   /* ---------- Circular scroll showcase (Home, desktop) ---------- */
@@ -726,8 +727,7 @@
   /* ---------- Init: real site uses "", the combined preview also inits the "-en" copies ---------- */
   ["", "-en"].forEach(function (suffix) {
     initContactForm(suffix);
-    initHeroGlobe(suffix);
-    initHeroWordReveal(suffix);
+    initScrollScrubHero(suffix);
     initCircularShowcase(suffix);
     initElasticProcess(suffix);
     initStickyStack(suffix);

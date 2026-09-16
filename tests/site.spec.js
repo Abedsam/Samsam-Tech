@@ -73,12 +73,30 @@ test('language toggle switches between DE and EN home', async ({ page }) => {
   await expect(page).toHaveURL(/index\.html/);
 });
 
-test('hero headline reveals with the gradient accent line intact', async ({ page }) => {
+test('scroll-scrub hero locks scroll, reveals the claim on scrub, then releases', async ({ page }) => {
   await page.goto('index.html');
-  const heroTitle = page.locator('#hero-title');
-  await expect(heroTitle.locator('.hero-word').first()).toBeVisible();
-  const accent = heroTitle.locator('.line-accent');
-  await expect(accent).toHaveText('With anyone, anywhere.');
+  await expect(page.locator('#sst-hero .sst-hero-title')).toHaveText('Wir digitalisierenIhr Leben.');
+  await expect(page.locator('.sst-hero-orb-img')).toBeVisible();
+
+  // Locked on load: body is pinned so the page can't scroll normally yet.
+  await expect.poll(() => page.evaluate(() => document.body.style.position)).toBe('fixed');
+
+  // Scrub forward until the German claim has fully revealed and the page unlocks.
+  const claim = page.locator('#sst-claim');
+  for (let i = 0; i < 60; i++) {
+    await page.mouse.wheel(0, 90);
+    const bodyPosition = await page.evaluate(() => document.body.style.position);
+    if (bodyPosition === '') break;
+    await page.waitForTimeout(20);
+  }
+  await expect.poll(() => page.evaluate(() => document.body.style.position)).toBe('');
+  await expect(claim).toHaveCSS('opacity', '1');
+  await expect(claim.locator('.sst-hero-claim-title')).toHaveText('Von der Idee bis zumdigitalen Erfolg.');
+
+  // Unlocked: normal wheel scrolling now moves the page.
+  const before = await page.evaluate(() => window.scrollY);
+  await page.mouse.wheel(0, 600);
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(before);
 });
 
 test('platform marquee is present, looping and gap-free at a wide viewport', async ({ page }) => {
