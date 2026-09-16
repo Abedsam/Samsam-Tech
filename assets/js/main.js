@@ -6,6 +6,21 @@
     el.textContent = new Date().getFullYear();
   });
 
+  /* ---------- Liquid-metal button ripple ---------- */
+  function initButtonRipple() {
+    document.addEventListener("click", function (e) {
+      var btn = e.target.closest(".btn-primary");
+      if (!btn) return;
+      var rect = btn.getBoundingClientRect();
+      var ripple = document.createElement("span");
+      ripple.className = "btn-ripple";
+      ripple.style.left = (e.clientX - rect.left) + "px";
+      ripple.style.top = (e.clientY - rect.top) + "px";
+      btn.appendChild(ripple);
+      ripple.addEventListener("animationend", function () { ripple.remove(); });
+    });
+  }
+
   /* ---------- Platform marquee (infinite scrolling chip strip) ---------- */
   function buildPlatformMarquee(track) {
     if (track.dataset.cloned) return;
@@ -735,5 +750,6 @@
     initFaq(suffix);
   });
   initPlatformMarquee();
+  initButtonRipple();
 
 })();
