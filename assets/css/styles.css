@@ -276,14 +276,14 @@ h2.section-heading {
 }
 
 .logo-badge {
-  width: 34px;
-  height: 34px;
-  border-radius: 8px;
+  width: 42px;
+  height: 42px;
+  border-radius: 9px;
   background: var(--color-platinum);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 5px;
+  padding: 6px;
   flex-shrink: 0;
 }
 
