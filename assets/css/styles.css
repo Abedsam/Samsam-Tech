@@ -773,7 +773,7 @@ h2.section-heading {
 
 .service-teaser-card .btn-arrow-icon { align-self: flex-start; }
 
-/* Grid is the mobile/tablet fallback for the circular showcase below */
+/* Grid is the mobile/tablet fallback for the pinned service flow below */
 @media (min-width: 900px) {
   .service-teaser-grid { display: none; }
 }
@@ -784,81 +784,114 @@ h2.section-heading {
   margin-top: var(--space-48);
 }
 
-/* ---------- Circular scroll showcase (Home, desktop) ---------- */
-.circular-showcase-wrap {
+/* ---------- Pinned scroll showcase (Home, desktop) ---------- */
+.service-flow {
   display: none;
 }
 
 @media (min-width: 900px) {
-  .circular-showcase-wrap {
-    display: block;
-    position: relative;
-    height: 340vh;
+  .service-flow {
+    display: flex;
+    flex-direction: column;
     margin-top: var(--space-24);
   }
 }
 
-.circular-showcase-sticky {
+.service-flow-panel {
   position: sticky;
   top: 96px;
-  height: calc(100vh - 96px);
-  max-height: 720px;
+  height: min(560px, 70vh);
+  border-radius: var(--radius-card);
+  padding: clamp(28px, 3.4vw, 48px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transform: rotate(var(--sf-rotate, 0deg));
+  transform-origin: bottom left;
+  will-change: transform;
+  box-shadow: 0 40px 80px rgba(3, 15, 34, 0.45);
+}
+
+.service-flow-panel--kelp { background: var(--color-liquid-kelp); }
+.service-flow-panel--deep { background: var(--color-liquid-deep); }
+.service-flow-panel--bio { background: var(--gradient-bio); }
+.service-flow-panel--mist { background: var(--color-liquid-mist); color: var(--color-liquid-deep); }
+
+.service-flow-top {
   display: flex;
   align-items: center;
-  overflow: hidden;
+  justify-content: space-between;
+  gap: var(--space-16);
 }
 
-.circular-col {
-  position: relative;
-  flex: 1 1 50%;
-  height: 70%;
-}
-
-.circular-title-item {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 88%;
-  max-width: 420px;
-  text-align: center;
-  pointer-events: none;
-  will-change: transform, opacity;
-}
-
-.circular-title-item h3 {
-  font-size: clamp(1.3rem, 2.3vw, 1.9rem);
-  letter-spacing: -0.02em;
-  line-height: 1.15;
-  color: var(--color-platinum);
-  margin-bottom: 10px;
-}
-
-.circular-title-item p {
-  font-size: 14px;
+.service-flow-tag {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
   color: var(--color-silver-mist);
-  line-height: 1.5;
 }
 
-.circular-card-item {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 190px;
-  height: 190px;
-  margin-left: -95px;
-  margin-top: -95px;
-  border-radius: var(--radius-card);
-  background: var(--color-liquid-kelp);
+.service-flow-panel--mist .service-flow-tag { color: var(--color-slate-deep); }
+
+.service-flow-icon {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   justify-content: center;
-  will-change: transform, opacity;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--color-liquid-mist);
 }
 
-.circular-card-item svg {
-  width: 60px;
-  height: 60px;
-  color: var(--color-liquid-mist);
+.service-flow-panel--mist .service-flow-icon {
+  background: rgba(4, 22, 46, 0.08);
+  color: var(--color-liquid-kelp);
+}
+
+.service-flow-icon svg { width: 24px; height: 24px; }
+
+.service-flow-divider {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+  margin: var(--space-20) 0;
+}
+
+.service-flow-panel--mist .service-flow-divider { border-top-color: rgba(4, 22, 46, 0.14); }
+
+.service-flow-panel h3 {
+  font-size: clamp(1.8rem, 3.2vw, 2.6rem);
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  color: var(--color-platinum);
+  margin-bottom: var(--space-16);
+}
+
+.service-flow-panel--mist h3 { color: var(--color-liquid-deep); }
+
+.service-flow-panel p {
+  max-width: 46ch;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--color-silver-mist);
+}
+
+.service-flow-panel--mist p { color: var(--color-slate-deep); }
+
+.service-flow-bottom {
+  margin-top: auto;
+  display: flex;
+  justify-content: flex-end;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .service-flow-panel {
+    position: relative;
+    top: auto;
+    transform: none;
+  }
 }
 
 /* ---------- Service detail bullets (Dienstleistungen page) ---------- */

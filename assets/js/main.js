@@ -451,73 +451,43 @@
   }
 
   /* ---------- Circular scroll showcase (Home, desktop) ---------- */
-  function initCircularShowcase(suffix) {
-    var titleTrack = document.getElementById("circular-titles" + suffix);
-    var cardTrack = document.getElementById("circular-cards" + suffix);
-    if (!titleTrack || !cardTrack) return;
-    var circularWrap = titleTrack.closest(".circular-showcase-wrap");
-    if (!circularWrap) return;
+  function initServiceFlow(suffix) {
+    var flow = document.getElementById("service-flow" + suffix);
+    if (!flow) return;
 
-    var titleItems = Array.prototype.slice.call(titleTrack.children);
-    var cardItems = Array.prototype.slice.call(cardTrack.children);
-    var itemCount = titleItems.length;
-    var desktopQuery = window.matchMedia("(min-width: 900px)");
-    var circularReduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    var radiusY = 190;
+    var panels = Array.prototype.slice.call(flow.querySelectorAll(".service-flow-panel"));
+    if (panels.length < 2) return;
+    var flowReduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (flowReduceMotion) return;
 
-    function wrap01(v) {
-      v = v % 1;
-      if (v < 0) v += 1;
-      return v;
+    function clamp01(v) {
+      return Math.max(0, Math.min(1, v));
     }
 
-    function renderCircular(progress) {
-      for (var i = 0; i < itemCount; i++) {
-        var local = wrap01(i / itemCount - progress);
-        var angle = local * Math.PI * 2;
-        var y = Math.cos(angle) * radiusY;
-        var depth = Math.sin(angle);
-        var strength = (depth + 1) / 2;
-        var eased = Math.pow(strength, 2.2);
-        var scale = 0.7 + eased * 0.3;
-        var opacity = 0.14 + eased * 0.86;
-        var z = Math.round(eased * 50);
-
-        var transform = "translate(-50%, calc(-50% + " + y + "px)) scale(" + scale + ")";
-
-        titleItems[i].style.transform = transform;
-        titleItems[i].style.opacity = opacity;
-        titleItems[i].style.zIndex = z;
-
-        cardItems[i].style.transform = transform;
-        cardItems[i].style.opacity = opacity;
-        cardItems[i].style.zIndex = z;
+    function updateFlow() {
+      var viewportH = window.innerHeight;
+      var start = viewportH;
+      var end = viewportH * 0.25;
+      for (var i = 1; i < panels.length; i++) {
+        var rect = panels[i].getBoundingClientRect();
+        var t = clamp01((start - rect.top) / (start - end));
+        var angle = 22 * (1 - t);
+        panels[i].style.setProperty("--sf-rotate", angle.toFixed(2) + "deg");
       }
     }
 
-    renderCircular(0);
-
-    var circularTicking = false;
-    function updateCircular() {
-      circularTicking = false;
-      if (!desktopQuery.matches || circularReduceMotion) return;
-      var rect = circularWrap.getBoundingClientRect();
-      var total = rect.height - window.innerHeight;
-      var progress = total > 0 ? -rect.top / total : 0;
-      progress = Math.max(0, Math.min(1, progress));
-      renderCircular(progress);
-    }
-
-    if (!circularReduceMotion) {
-      window.addEventListener("scroll", function () {
-        if (!circularTicking) {
-          circularTicking = true;
-          requestAnimationFrame(updateCircular);
-        }
-      }, { passive: true });
-      window.addEventListener("resize", updateCircular);
-      updateCircular();
-    }
+    var flowTicking = false;
+    window.addEventListener("scroll", function () {
+      if (!flowTicking) {
+        flowTicking = true;
+        requestAnimationFrame(function () {
+          flowTicking = false;
+          updateFlow();
+        });
+      }
+    }, { passive: true });
+    window.addEventListener("resize", updateFlow);
+    updateFlow();
   }
 
   /* ---------- Elastic process accordion (Wie arbeiten wir) ---------- */
@@ -743,7 +713,7 @@
   ["", "-en"].forEach(function (suffix) {
     initContactForm(suffix);
     initScrollScrubHero(suffix);
-    initCircularShowcase(suffix);
+    initServiceFlow(suffix);
     initElasticProcess(suffix);
     initStickyStack(suffix);
     initProjectSlider(suffix);
