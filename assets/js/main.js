@@ -250,10 +250,11 @@
       var company = form.company.value.trim();
       var email = form.email.value.trim();
       var phone = form.phone.value.trim();
+      var topic = form.subject.value.trim();
       var message = form.message.value.trim();
 
       var isEnglish = document.documentElement.lang === "en" || suffix === "-en";
-      var subject = (isEnglish ? "Inquiry via samsam-tech.de from " : "Anfrage über samsam-tech.de von ") + firstname + " " + lastname;
+      var emailSubject = (isEnglish ? "Inquiry via samsam-tech.de: " : "Anfrage über samsam-tech.de: ") + topic;
 
       // FormData (not JSON) so the request stays a CORS "simple request" -
       // no preflight OPTIONS round-trip that some browsers/extensions
@@ -261,13 +262,14 @@
       // submission style Web3Forms' own docs use.
       var formData = new FormData();
       formData.append("access_key", WEB3FORMS_ACCESS_KEY);
-      formData.append("subject", subject);
+      formData.append("subject", emailSubject);
       formData.append("from_name", firstname + " " + lastname);
       formData.append("Vorname", firstname);
       formData.append("Nachname", lastname);
       formData.append("Unternehmen", company || "-");
       formData.append("E-Mail", email);
       formData.append("Telefon", phone || "-");
+      formData.append("Betreff", topic);
       formData.append("Nachricht", message);
 
       if (submitBtn) submitBtn.disabled = true;
@@ -310,6 +312,7 @@
             "Company: " + (company || "-"),
             "Email: " + email,
             "Phone: " + (phone || "-"),
+            "Subject: " + topic,
             "",
             "Message:",
             message
@@ -319,13 +322,14 @@
             "Unternehmen: " + (company || "-"),
             "E-Mail: " + email,
             "Telefon: " + (phone || "-"),
+            "Betreff: " + topic,
             "",
             "Nachricht:",
             message
           ];
           window.location.href =
             "mailto:Info@samsam-tech.de" +
-            "?subject=" + encodeURIComponent(subject) +
+            "?subject=" + encodeURIComponent(emailSubject) +
             "&body=" + encodeURIComponent(bodyLines.join("\n"));
 
           if (formNote) {
