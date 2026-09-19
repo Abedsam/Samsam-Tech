@@ -1169,127 +1169,85 @@ a.lang-option:hover {
   .stats-grid { grid-template-columns: 1fr; gap: var(--space-40); }
 }
 
-/* ---------- Process (Wie arbeiten wir) — elastic accordion ---------- */
-.elastic-process {
+/* ---------- Process (Wie arbeiten wir) — timeline ---------- */
+.process-timeline {
   display: flex;
   flex-direction: column;
-  gap: var(--space-16);
-  height: 620px;
+  max-width: 720px;
+  margin: 0 auto;
 }
 
-@media (min-width: 768px) {
-  .elastic-process {
-    flex-direction: row;
-    height: 460px;
-  }
-}
-
-.elastic-panel {
+.timeline-item {
   position: relative;
-  flex: 1 1 0;
-  overflow: hidden;
-  border-radius: var(--radius-card);
-  cursor: pointer;
-  background: var(--color-liquid-kelp);
-  filter: brightness(0.6);
-  transition: flex 0.7s cubic-bezier(0.25, 1, 0.5, 1), filter 0.5s ease;
+  display: flex;
+  gap: var(--space-24);
+  padding-bottom: var(--space-48);
 }
 
-.elastic-panel:hover { filter: brightness(0.8); }
+.timeline-item:last-child { padding-bottom: 0; }
 
-.elastic-panel.is-active {
-  flex: 4 1 0;
-  filter: brightness(1);
-}
-
-.elastic-panel-photo {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.elastic-panel-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, rgba(3, 15, 34, 0.92) 0%, rgba(3, 15, 34, 0.35) 55%, transparent 100%);
-  opacity: 0;
-  transition: opacity 0.5s ease;
-}
-
-.elastic-panel.is-active .elastic-panel-overlay { opacity: 1; }
-
-.elastic-panel-content {
-  position: absolute;
-  inset: 0;
+.timeline-marker {
+  position: relative;
+  flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  padding: var(--space-28);
-  opacity: 0;
-  transform: translateY(32px);
-  transition: opacity 0.5s ease, transform 0.5s ease;
+  align-items: center;
 }
 
-.elastic-panel.is-active .elastic-panel-content {
-  opacity: 1;
-  transform: translateY(0);
-  transition-delay: 0.15s;
+.timeline-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.16);
+  background: var(--color-liquid-kelp);
+  color: var(--color-liquid-mist);
+  font-size: 14px;
+  font-weight: 600;
+  flex-shrink: 0;
+  z-index: 1;
 }
 
-.elastic-panel-tag {
-  align-self: flex-start;
+.timeline-item--highlight .timeline-icon {
+  border-color: transparent;
+  background: var(--gradient-bio);
+  color: var(--color-platinum);
+}
+
+.timeline-connector {
+  flex: 1;
+  width: 2px;
+  min-height: 32px;
+  margin-top: 4px;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0.06));
+}
+
+.timeline-content { padding-top: 6px; }
+
+.timeline-tag {
+  display: inline-block;
   font-size: 11px;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: var(--color-liquid-mist);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 999px;
-  padding: 5px 12px;
-  margin-bottom: var(--space-16);
-  white-space: nowrap;
+  color: var(--color-lavender-phosphor);
+  margin-bottom: 8px;
 }
 
-.elastic-panel-content h3 {
-  font-size: clamp(1.2rem, 2.2vw, 1.7rem);
+.timeline-content h3 {
+  font-size: clamp(1.15rem, 2vw, 1.4rem);
   color: var(--color-platinum);
-  margin-bottom: 10px;
-  line-height: 1.2;
+  margin-bottom: 8px;
+  line-height: 1.25;
 }
 
-.elastic-panel-content p {
-  color: var(--color-silver-mist);
+.timeline-content p {
+  max-width: 480px;
   font-size: 14px;
-  line-height: 1.55;
-  max-width: 360px;
-}
-
-.elastic-panel-label {
-  position: absolute;
-  left: 50%;
-  bottom: var(--space-24);
-  transform: translateX(-50%) scale(1);
-  opacity: 1;
-  transition: opacity 0.4s ease, transform 0.4s ease;
-  font-size: 13px;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  color: var(--color-platinum);
-  white-space: nowrap;
-}
-
-@media (min-width: 768px) {
-  .elastic-panel-label {
-    writing-mode: vertical-rl;
-    font-size: 15px;
-  }
-}
-
-.elastic-panel.is-active .elastic-panel-label {
-  opacity: 0;
-  transform: translateX(-50%) scale(0.6);
+  line-height: 1.6;
+  color: var(--color-silver-mist);
 }
 
 /* ---------- Platform marquee (in-flow section) ---------- */
