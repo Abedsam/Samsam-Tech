@@ -67,11 +67,17 @@ test('header nav links to every page and back', async ({ page }) => {
   }
 });
 
-test('language toggle switches between DE and EN home', async ({ page }) => {
+test('language switcher dropdown switches between DE and EN home', async ({ page }) => {
   await page.goto('index.html');
-  await page.locator('.site-header .lang-toggle').click();
+  const switcher = page.locator('.site-header .lang-switcher');
+  await switcher.locator('.lang-switcher-trigger').click();
+  await expect(switcher).toHaveClass(/is-open/);
+  await switcher.locator('a.lang-option').click();
   await expect(page).toHaveURL(/en\/index\.html/);
-  await page.locator('.site-header .lang-toggle').click();
+
+  const switcherEn = page.locator('.site-header .lang-switcher');
+  await switcherEn.locator('.lang-switcher-trigger').click();
+  await switcherEn.locator('a.lang-option').click();
   await expect(page).toHaveURL(/index\.html/);
 });
 

@@ -103,6 +103,36 @@
     });
   }
 
+  /* ---------- Language switcher dropdown ---------- */
+  function initLangSwitcher() {
+    var switchers = Array.prototype.slice.call(document.querySelectorAll(".lang-switcher"));
+    if (!switchers.length) return;
+
+    function closeAll(except) {
+      switchers.forEach(function (el) {
+        if (el === except) return;
+        el.classList.remove("is-open");
+        el.querySelector(".lang-switcher-trigger").setAttribute("aria-expanded", "false");
+      });
+    }
+
+    switchers.forEach(function (switcher) {
+      var trigger = switcher.querySelector(".lang-switcher-trigger");
+      trigger.addEventListener("click", function (e) {
+        e.stopPropagation();
+        var isOpen = switcher.classList.toggle("is-open");
+        trigger.setAttribute("aria-expanded", isOpen ? "true" : "false");
+        closeAll(switcher);
+      });
+    });
+
+    document.addEventListener("click", function () { closeAll(); });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") closeAll();
+    });
+  }
+  initLangSwitcher();
+
   /* ---------- Dock-style magnetic nav ---------- */
   function initMagneticNav(nav) {
     var links = Array.prototype.slice.call(nav.children).filter(function (el) {
