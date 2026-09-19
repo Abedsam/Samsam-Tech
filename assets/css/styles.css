@@ -2234,7 +2234,15 @@ h2.section-heading {
   margin-bottom: var(--space-32);
 }
 
-.pricing-card .btn { width: 100%; justify-content: center; margin-top: auto; }
+.pricing-card .btn {
+  width: 100%;
+  justify-content: center;
+  margin-top: auto;
+  white-space: normal;
+  text-align: center;
+  font-size: 13px;
+  padding: 14px 18px;
+}
 
 .pricing-note {
   max-width: 680px;
