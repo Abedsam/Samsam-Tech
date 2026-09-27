@@ -9,6 +9,7 @@ const PAGES = [
   'ueber-uns.html',
   'kontakt.html',
   'impressum.html',
+  'datenschutz.html',
   'en/index.html',
   'en/services.html',
   'en/pricing.html',
@@ -16,6 +17,7 @@ const PAGES = [
   'en/about.html',
   'en/contact.html',
   'en/imprint.html',
+  'en/privacy.html',
 ];
 
 // Google Fonts is a third-party CDN outside the site's control - some
