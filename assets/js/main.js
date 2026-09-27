@@ -275,6 +275,14 @@
     form.addEventListener("submit", function (e) {
       e.preventDefault();
 
+      // Honeypot: real visitors never see or fill this field, so a
+      // checked box means a bot filled every input automatically -
+      // drop the submission silently instead of sending it on.
+      if (form.botcheck && form.botcheck.checked) {
+        form.reset();
+        return;
+      }
+
       var firstname = form.firstname.value.trim();
       var lastname = form.lastname.value.trim();
       var company = form.company.value.trim();
@@ -301,6 +309,7 @@
       formData.append("Telefon", phone || "-");
       formData.append("Betreff", topic);
       formData.append("Nachricht", message);
+      formData.append("botcheck", "");
 
       if (submitBtn) submitBtn.disabled = true;
       if (formNote) {
