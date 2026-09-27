@@ -2188,11 +2188,28 @@ a.lang-option:hover {
   color: var(--color-platinum);
 }
 
+.legal-block h4 {
+  font-size: 15px;
+  font-weight: 600;
+  margin: var(--space-20) 0 6px;
+  color: var(--color-platinum);
+}
+
+.legal-block h4:first-child { margin-top: 0; }
+
 .legal-block p {
   color: var(--color-silver-mist);
   font-size: 15px;
   line-height: 1.7;
   margin-bottom: 8px;
+}
+
+.legal-block ul {
+  color: var(--color-silver-mist);
+  font-size: 15px;
+  line-height: 1.7;
+  margin: 0 0 8px;
+  padding-left: 20px;
 }
 
 .legal-block a { color: var(--color-liquid-mist); text-decoration: underline; }
