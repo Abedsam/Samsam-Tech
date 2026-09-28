@@ -3,23 +3,23 @@ import { test, expect } from '@playwright/test';
 
 const PAGES = [
   'index.html',
-  'home/',
-  'dienstleistungen/',
-  'preise/',
-  'projekte/',
-  'ueber-uns/',
-  'kontakt/',
-  'impressum/',
-  'datenschutz/',
+  'home.html',
+  'dienstleistungen.html',
+  'preise.html',
+  'projekte.html',
+  'ueber-uns.html',
+  'kontakt.html',
+  'impressum.html',
+  'datenschutz.html',
   'en/index.html',
-  'en/home/',
-  'en/services/',
-  'en/pricing/',
-  'en/projects/',
-  'en/about/',
-  'en/contact/',
-  'en/imprint/',
-  'en/privacy/',
+  'en/home.html',
+  'en/services.html',
+  'en/pricing.html',
+  'en/projects.html',
+  'en/about.html',
+  'en/contact.html',
+  'en/imprint.html',
+  'en/privacy.html',
 ];
 
 // Google Fonts is a third-party CDN outside the site's control - some
@@ -55,38 +55,38 @@ for (const path of PAGES) {
 }
 
 test('header nav links to every page and back', async ({ page }) => {
-  await page.goto('home/');
+  await page.goto('home.html');
   const nav = page.locator('.site-header .nav-links');
   const pages = {
-    Dienstleistungen: '/dienstleistungen/',
-    Projekte: '/projekte/',
-    'Über uns': '/ueber-uns/',
-    Kontakt: '/kontakt/',
-    Impressum: '/impressum/',
+    Dienstleistungen: 'dienstleistungen.html',
+    Projekte: 'projekte.html',
+    'Über uns': 'ueber-uns.html',
+    Kontakt: 'kontakt.html',
+    Impressum: 'impressum.html',
   };
   for (const [label, href] of Object.entries(pages)) {
     await nav.getByRole('link', { name: label }).click();
-    await expect(page).toHaveURL(new RegExp(href.replace(/\//g, '\\/') + '$'));
+    await expect(page).toHaveURL(new RegExp(href.replace('.', '\\.')));
     await page.goBack();
   }
 });
 
 test('language switcher dropdown switches between DE and EN home', async ({ page }) => {
-  await page.goto('home/');
+  await page.goto('home.html');
   const switcher = page.locator('.site-header .lang-switcher');
   await switcher.locator('.lang-switcher-trigger').click();
   await expect(switcher).toHaveClass(/is-open/);
   await switcher.locator('a.lang-option').click();
-  await expect(page).toHaveURL(/\/en\/home\/$/);
+  await expect(page).toHaveURL(/en\/home\.html/);
 
   const switcherEn = page.locator('.site-header .lang-switcher');
   await switcherEn.locator('.lang-switcher-trigger').click();
   await switcherEn.locator('a.lang-option').click();
-  await expect(page).toHaveURL(/\/home\/$/);
+  await expect(page).toHaveURL(/home\.html/);
 });
 
 test('scroll-scrub hero locks scroll, reveals the claim on scrub, then releases', async ({ page }) => {
-  await page.goto('home/');
+  await page.goto('home.html');
   await expect(page.locator('#sst-hero .sst-hero-title')).toHaveText('Wir digitalisierenIhr Leben.');
   await expect(page.locator('.sst-hero-orb-img')).toBeVisible();
 
@@ -113,7 +113,7 @@ test('scroll-scrub hero locks scroll, reveals the claim on scrub, then releases'
 
 test('platform marquee is present, looping and gap-free at a wide viewport', async ({ page }) => {
   await page.setViewportSize({ width: 1920, height: 900 });
-  await page.goto('home/');
+  await page.goto('home.html');
   const section = page.locator('.platform-marquee-section');
   await section.scrollIntoViewIfNeeded();
 
@@ -131,6 +131,6 @@ test('platform marquee is present, looping and gap-free at a wide viewport', asy
 });
 
 test('contact form has the expected required fields', async ({ page }) => {
-  await page.goto('kontakt/');
+  await page.goto('kontakt.html');
   await expect(page.locator('form#contact-form, form')).toBeVisible();
 });
