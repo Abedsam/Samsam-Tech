@@ -3,6 +3,7 @@ import { test, expect } from '@playwright/test';
 
 const PAGES = [
   'index.html',
+  'home.html',
   'dienstleistungen.html',
   'preise.html',
   'projekte.html',
@@ -11,6 +12,7 @@ const PAGES = [
   'impressum.html',
   'datenschutz.html',
   'en/index.html',
+  'en/home.html',
   'en/services.html',
   'en/pricing.html',
   'en/projects.html',
@@ -53,7 +55,7 @@ for (const path of PAGES) {
 }
 
 test('header nav links to every page and back', async ({ page }) => {
-  await page.goto('index.html');
+  await page.goto('home.html');
   const nav = page.locator('.site-header .nav-links');
   const pages = {
     Dienstleistungen: 'dienstleistungen.html',
@@ -70,21 +72,21 @@ test('header nav links to every page and back', async ({ page }) => {
 });
 
 test('language switcher dropdown switches between DE and EN home', async ({ page }) => {
-  await page.goto('index.html');
+  await page.goto('home.html');
   const switcher = page.locator('.site-header .lang-switcher');
   await switcher.locator('.lang-switcher-trigger').click();
   await expect(switcher).toHaveClass(/is-open/);
   await switcher.locator('a.lang-option').click();
-  await expect(page).toHaveURL(/en\/index\.html/);
+  await expect(page).toHaveURL(/en\/home\.html/);
 
   const switcherEn = page.locator('.site-header .lang-switcher');
   await switcherEn.locator('.lang-switcher-trigger').click();
   await switcherEn.locator('a.lang-option').click();
-  await expect(page).toHaveURL(/index\.html/);
+  await expect(page).toHaveURL(/home\.html/);
 });
 
 test('scroll-scrub hero locks scroll, reveals the claim on scrub, then releases', async ({ page }) => {
-  await page.goto('index.html');
+  await page.goto('home.html');
   await expect(page.locator('#sst-hero .sst-hero-title')).toHaveText('Wir digitalisierenIhr Leben.');
   await expect(page.locator('.sst-hero-orb-img')).toBeVisible();
 
@@ -111,7 +113,7 @@ test('scroll-scrub hero locks scroll, reveals the claim on scrub, then releases'
 
 test('platform marquee is present, looping and gap-free at a wide viewport', async ({ page }) => {
   await page.setViewportSize({ width: 1920, height: 900 });
-  await page.goto('index.html');
+  await page.goto('home.html');
   const section = page.locator('.platform-marquee-section');
   await section.scrollIntoViewIfNeeded();
 
