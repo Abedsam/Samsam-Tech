@@ -435,12 +435,15 @@
     function onWheel(e) {
       if (locked || (window.scrollY <= 0 && e.deltaY < 0)) { addDelta(e.deltaY); e.preventDefault(); }
     }
+    // Touch swipes cover far less physical distance than a wheel/trackpad
+    // gesture, so scale them up a bit to make the sequence feel equally fast.
+    var TOUCH_SPEEDUP = 1.8;
     function onTouchStart(e) { touchY = e.touches[0] ? e.touches[0].clientY : 0; }
     function onTouchMove(e) {
       var y = e.touches[0] ? e.touches[0].clientY : touchY;
       var dy = touchY - y;
       touchY = y;
-      if (locked) { addDelta(dy); e.preventDefault(); }
+      if (locked) { addDelta(dy * TOUCH_SPEEDUP); e.preventDefault(); }
     }
     function onKey(e) {
       if (!locked) return;
