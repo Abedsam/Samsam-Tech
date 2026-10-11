@@ -2138,13 +2138,25 @@ a.lang-option:hover {
 
 .footer-col a:hover { color: var(--color-platinum); }
 
+.footer-col:has(.social-link) ul {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
 .footer-col .social-link {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
-.footer-col .social-link svg { width: 16px; height: 16px; flex-shrink: 0; }
+.footer-col .social-link:hover { border-color: rgba(255, 255, 255, 0.4); }
+
+.footer-col .social-link svg { width: 17px; height: 17px; flex-shrink: 0; }
 
 .footer-bottom {
   position: relative;
