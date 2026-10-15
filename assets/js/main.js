@@ -392,7 +392,6 @@
     var orb = document.getElementById("sst-orb" + suffix);
     var panel = document.getElementById("sst-panel" + suffix);
     var claim = document.getElementById("sst-claim" + suffix);
-    var hint = document.getElementById("sst-hint" + suffix);
     var bar = document.getElementById("sst-bar" + suffix);
 
     var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -406,7 +405,7 @@
     function ease(t) { return t * t * (3 - 2 * t); }
 
     var target = 0, cur = 0, vel = 0, last = 0, raf = 0;
-    var started = false, locked = false, lockY = 0, touchY = 0;
+    var locked = false, lockY = 0, touchY = 0;
 
     function engage() {
       if (locked) return;
@@ -427,7 +426,6 @@
       // clamp per-event delta so trackpad/mouse jumps don't snap the sequence
       var step = (Math.sign(dy) * Math.min(Math.abs(dy), 90)) / SCRUB_DISTANCE;
       target = clamp(target + step, 0, 1);
-      if (target > 0.001) started = true;
       if (target >= 0.999) release();
       else if (window.scrollY <= 0) engage();
     }
@@ -488,7 +486,6 @@
         claim.style.filter = "blur(" + ((1 - t2) * 7) + "px)";
         claim.style.letterSpacing = ((1 - t2) * 0.12) + "em";
       }
-      if (hint) hint.style.opacity = started ? "0" : "1";
       if (bar) bar.style.transform = "scaleX(" + p + ")";
 
       raf = requestAnimationFrame(frame);

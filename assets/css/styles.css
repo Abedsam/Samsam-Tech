@@ -690,32 +690,6 @@ a.lang-option:hover {
   max-width: 16em;
 }
 
-.sst-hero-hint {
-  position: absolute;
-  left: 50%;
-  bottom: clamp(20px, 6vh, 48px);
-  transform: translateX(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.32em;
-  text-transform: uppercase;
-  transition: opacity 0.4s ease;
-  pointer-events: none;
-  z-index: 6;
-}
-
-.sst-hero-hint svg { animation: sst-bounce 1.6s ease-in-out infinite; }
-
-@keyframes sst-bounce {
-  0%, 100% { transform: translateY(0); opacity: 0.45; }
-  50% { transform: translateY(5px); opacity: 1; }
-}
-
 .sst-hero-progress {
   position: absolute;
   left: 0;
@@ -732,10 +706,6 @@ a.lang-option:hover {
   background: linear-gradient(90deg, rgba(56, 189, 248, 0.35), rgba(56, 189, 248, 0.95));
   transform: scaleX(0);
   transform-origin: left center;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .sst-hero-hint { display: none; }
 }
 
 @media (max-width: 640px) {
