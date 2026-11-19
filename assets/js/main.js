@@ -262,7 +262,10 @@
     statEls.forEach(function (el) { statIo.observe(el); });
   }
 
-  /* ---------- Contact form -> Web3Forms backend ---------- */
+  /* ---------- Contact form -> own server (Germany), Web3Forms + mailto as fallback ---------- */
+  // Own backend: see /server in this repository. Once it runs reliably,
+  // the Web3Forms fallback below can be removed.
+  var CONTACT_API_URL = "https://api.samsam-tech.de/api/contact";
   var WEB3FORMS_ACCESS_KEY = "8f4a7e89-b8a7-4c5c-8b27-6c4ac8f3e1c7";
 
   function initContactForm(suffix) {
@@ -318,21 +321,53 @@
         formNote.style.display = "block";
       }
 
-      fetch("https://api.web3forms.com/submit", {
-        method: "POST",
-        headers: { "Accept": "application/json" },
-        body: formData
-      })
-        .then(function (res) {
-          return res.json().then(function (data) {
-            return { status: res.status, data: data };
-          });
+      // 1) Own server in Germany (data stays encrypted on our own machine).
+      //    URLSearchParams keeps this a CORS "simple request" as well.
+      var ownBody = new URLSearchParams();
+      ownBody.append("firstname", firstname);
+      ownBody.append("lastname", lastname);
+      ownBody.append("company", company);
+      ownBody.append("email", email);
+      ownBody.append("phone", phone);
+      ownBody.append("subject", topic);
+      ownBody.append("message", message);
+      ownBody.append("lang", isEnglish ? "en" : "de");
+
+      var viaOwnServer = CONTACT_API_URL
+        ? fetch(CONTACT_API_URL, {
+            method: "POST",
+            headers: { "Accept": "application/json" },
+            body: ownBody
+          }).then(function (res) {
+            return res.json().then(function (data) {
+              if (!res.ok || !data.success) throw new Error(data.message || "HTTP " + res.status);
+              return data;
+            });
+          })
+        : Promise.reject(new Error("own contact API not configured"));
+
+      viaOwnServer
+        .catch(function (ownErr) {
+          // 2) Fallback while the own server is not reachable yet: Web3Forms.
+          console.warn("Own contact API unavailable, falling back to Web3Forms:", ownErr);
+          return fetch("https://api.web3forms.com/submit", {
+            method: "POST",
+            headers: { "Accept": "application/json" },
+            body: formData
+          })
+            .then(function (res) {
+              return res.json().then(function (data) {
+                return { status: res.status, data: data };
+              });
+            })
+            .then(function (result) {
+              if (!result.data.success) {
+                console.error("Web3Forms submit failed:", result.status, result.data);
+                throw new Error(result.data.message || "submit failed");
+              }
+            });
         })
-        .then(function (result) {
-          if (!result.data.success) {
-            console.error("Web3Forms submit failed:", result.status, result.data);
-            throw new Error(result.data.message || "submit failed");
-          }
+        .then(function () {
           form.reset();
           if (formNote) {
             formNote.textContent = isEnglish

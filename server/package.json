@@ -1,0 +1,19 @@
+{
+  "name": "samsam-tech-api",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Eigener Server für das Kontaktformular und die Anruf-Benachrichtigung per WhatsApp (Samsam-Tech)",
+  "type": "module",
+  "main": "src/index.js",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node src/index.js",
+    "setup": "node scripts/setup.js",
+    "test": "node --test test/*.test.js"
+  },
+  "dependencies": {
+    "nodemailer": "^6.9.16"
+  }
+}
