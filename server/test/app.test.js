@@ -27,6 +27,7 @@ before(async () => {
     ADMIN_TOTP_SECRET: totpSecret,
     SIPGATE_WEBHOOK_TOKEN: TOKEN,
     CALL_NOTIFY_ON: "missed",
+    CALL_SHOW_NUMBER: "1",
   });
   const store = new Store(dir, key);
   const notifier = { whatsapp: async (t) => sent.push(t), email: async () => ({ skipped: true }) };
@@ -134,6 +135,25 @@ test("Anruf: angenommener Anruf löst keine Nachricht aus", async () => {
 test("Anruf-Webhook mit falschem Token wird abgewiesen", async () => {
   const res = await post(`/hooks/sipgate/falsch/new-call`, form({ direction: "in", from: "49301" }));
   assert.equal(res.status, 404);
+});
+
+test("Datenschutz-Modus (Standard): Nummer landet nicht in WhatsApp, aber im Admin-Bereich", async () => {
+  const dir2 = fs.mkdtempSync(path.join(os.tmpdir(), "samsam-api-"));
+  const msgs = [];
+  const config = configFromEnv({ PUBLIC_BASE_URL: API, ADMIN_PASSWORD_HASH: "x", ADMIN_TOTP_SECRET: totpSecret, SIPGATE_WEBHOOK_TOKEN: TOKEN });
+  const store2 = new Store(dir2, key);
+  const srv = http.createServer(createApp({ config, store: store2, notifier: { whatsapp: async (t) => msgs.push(t), email: async () => ({}) }, log: { info() {}, warn() {}, error() {} } }));
+  await new Promise((r) => srv.listen(0, "127.0.0.1", r));
+  const b2 = `http://127.0.0.1:${srv.address().port}`;
+  const p = (u, body) => fetch(b2 + u, { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body });
+  await p(`/hooks/sipgate/${TOKEN}/new-call`, form({ direction: "in", from: "4917600000001", callId: "p1" }));
+  await p(`/hooks/sipgate/${TOKEN}/hangup`, form({ cause: "cancel", callId: "p1" }));
+  srv.close();
+  assert.equal(msgs.length, 1);
+  assert.ok(!msgs[0].includes("4917600000001"));
+  assert.match(msgs[0], /Verpasster Anruf \(Nummer im Admin-Bereich/);
+  assert.equal(store2.list("calls")[0].from, "+4917600000001");
+  fs.rmSync(dir2, { recursive: true, force: true });
 });
 
 test("Rufnummern werden lesbar formatiert", () => {

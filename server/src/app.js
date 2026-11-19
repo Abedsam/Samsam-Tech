@@ -184,6 +184,13 @@ export function createApp({ config, store, notifier, log = console, now = () => 
 
   /* ---------- Anrufe (sipgate Push-API) ---------- */
 
+  // Datenschutz-Modus: Nummer nur im Admin-Bereich, nicht in der WhatsApp-Nachricht (Meta).
+  function callerPart(from) {
+    if (config.calls.showNumber) return ` von ${from}`;
+    const adminUrl = config.publicBaseUrl ? `${config.publicBaseUrl}/admin` : "/admin";
+    return ` (Nummer im Admin-Bereich: ${adminUrl})`;
+  }
+
   function cleanupPending() {
     const cutoff = now() - 60 * 60 * 1000;
     for (const [id, c] of pendingCalls) if (c.start < cutoff) pendingCalls.delete(id);
@@ -201,7 +208,7 @@ export function createApp({ config, store, notifier, log = console, now = () => 
       const call = { from: formatNumber(b.from), to: formatNumber(b.to), start: now(), answered: false };
       if (callId) pendingCalls.set(callId, call);
       if (config.calls.notifyOn === "all") {
-        await notifySafely(() => notifier.whatsapp(`📞 Eingehender Anruf von ${call.from} um ${clock(new Date(call.start))} Uhr`), log);
+        await notifySafely(() => notifier.whatsapp(`📞 Eingehender Anruf${callerPart(call.from)} um ${clock(new Date(call.start))} Uhr`), log);
       }
       const base = config.publicBaseUrl || `https://${req.headers.host}`;
       const hook = (a) => esc(`${base}/hooks/sipgate/${config.calls.webhookToken}/${a}`);
@@ -220,7 +227,7 @@ export function createApp({ config, store, notifier, log = console, now = () => 
       const answered = call.answered;
       store.add("calls", { from: call.from, to: call.to, answered, cause: String(b.cause || "").slice(0, 40) });
       if (!answered && config.calls.notifyOn === "missed") {
-        await notifySafely(() => notifier.whatsapp(`📞 Verpasster Anruf von ${call.from} um ${clock(new Date(call.start))} Uhr`), log);
+        await notifySafely(() => notifier.whatsapp(`📞 Verpasster Anruf${callerPart(call.from)} um ${clock(new Date(call.start))} Uhr`), log);
       }
       return xml();
     }

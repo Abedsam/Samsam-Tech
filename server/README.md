@@ -124,9 +124,37 @@ Test im Browser: **https://api.samsam-tech.de/health** muss `{"ok":true}` zeigen
    (`DEIN_SIPGATE_WEBHOOK_TOKEN` aus der `.env` – er sorgt dafür, dass niemand sonst Anrufe vortäuschen kann.)
 2. Annahme und Auflegen meldet sipgate danach automatisch an den Server. Dafür ist keine weitere Einstellung nötig.
 3. `CALL_NOTIFY_ON=missed` meldet nur verpasste Anrufe, `CALL_NOTIFY_ON=all` jeden eingehenden Anruf sofort.
-4. Test: die sipgate-Nummer anrufen, nicht abnehmen, auflegen → WhatsApp „📞 Verpasster Anruf von +49… um 14:32 Uhr“.
+4. `CALL_SHOW_NUMBER=0` (Standard, empfohlen): Die WhatsApp-Nachricht lautet nur „📞 Verpasster Anruf um 14:32 Uhr“, die Nummer steht im Admin-Bereich. So geht keine Rufnummer an Meta/WhatsApp. Mit `CALL_SHOW_NUMBER=1` steht die Nummer direkt in der Nachricht.
+5. Test: die sipgate-Nummer anrufen, nicht abnehmen, auflegen → WhatsApp-Hinweis kommt, der Anruf erscheint im Admin-Bereich unter „Anrufe“.
 
-## 9. Updates einspielen
+## 9. Server absichern und Backups
+
+**Automatische Sicherheitsupdates und Anmeldung nur per SSH-Schlüssel:**
+
+```bash
+apt install -y unattended-upgrades
+dpkg-reconfigure -plow unattended-upgrades          # mit „Ja“ bestätigen
+
+# Passwort-Anmeldung per SSH abschalten (vorher prüfen, dass der SSH-Schlüssel funktioniert!)
+sed -i 's/^#\?PasswordAuthentication.*/PasswordAuthentication no/' /etc/ssh/sshd_config
+systemctl restart ssh
+```
+
+**Backups:**
+1. In der Hetzner Cloud Console beim Server **„Backups“ aktivieren**. Hetzner sichert dann täglich den ganzen Server und hebt die letzten 7 Sicherungen auf (kleiner Aufpreis).
+2. Die gespeicherten Anfragen sind verschlüsselt. Ein Backup ist ohne den Schlüssel also nicht lesbar. Bewahre deshalb **die komplette `.env`-Datei** (vor allem `DATA_KEY`) zusätzlich sicher auf, z. B. im Passwort-Manager. Ohne sie nützt das Backup nichts.
+3. Einmal im Quartal testen: Backup als neuen Server wiederherstellen und prüfen, ob sich der Admin-Bereich öffnen lässt.
+
+## 10. Datenschutz (DSGVO) – Checkliste
+
+- [ ] Auftragsverarbeitungsvertrag (AVV) mit **Hetzner** abschließen (Cloud Console → Konto)
+- [ ] AVV mit **sipgate** abschließen (im sipgate-Konto)
+- [ ] Datenverarbeitungsbedingungen von **Meta/WhatsApp Business** akzeptieren
+- [ ] Bei Kunden: **AVV zwischen Samsam-Tech und dem Kunden**, weil Samsam-Tech den Server für ihn betreibt
+- [ ] Datenschutzerklärung der Website anpassen (eigener Server, Speicherdauer, sipgate, WhatsApp)
+- [ ] `CALL_SHOW_NUMBER=0` lassen, wenn keine Rufnummern an Meta gehen sollen
+
+## 11. Updates einspielen
 
 ```bash
 cd /opt/samsam-api && sudo -u samsam git pull
@@ -136,7 +164,7 @@ systemctl restart samsam-api
 
 Logs ansehen: `journalctl -u samsam-api -f`
 
-## 10. Wenn alles stabil läuft
+## 12. Wenn alles stabil läuft
 
 - In `assets/js/main.js` den Web3Forms-Fallback entfernen und `api.web3forms.com` aus der Content-Security-Policy der Seiten streichen.
 - Die **Datenschutzerklärung** anpassen: Der Absatz zu Web3Forms entfällt; stattdessen beschreiben, dass Anfragen verschlüsselt auf einem eigenen Server in Deutschland gespeichert und nach 180 Tagen gelöscht werden.

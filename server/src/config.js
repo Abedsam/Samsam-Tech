@@ -45,6 +45,8 @@ export function configFromEnv(env = process.env) {
     calls: {
       webhookToken: env.SIPGATE_WEBHOOK_TOKEN,
       notifyOn: env.CALL_NOTIFY_ON === "all" ? "all" : "missed",
+      // Standard: Nummer NICHT an WhatsApp senden (Datenschutz). Mit CALL_SHOW_NUMBER=1 einschalten.
+      showNumber: env.CALL_SHOW_NUMBER === "1",
     },
   };
 }
